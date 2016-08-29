@@ -1,0 +1,1 @@
+This CocosSharp project is an attempt to take Havik IV's awesome Android specific project (https://github.com/HavikIV/CandyCrushRipoff) and make it cross-platform (Android, iOS and Windows Phone) as well as making it more generic.

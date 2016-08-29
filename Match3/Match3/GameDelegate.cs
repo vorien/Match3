@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using CocosSharp;
 using CocosDenshion;
+using Match3.Scenes;
 
 namespace Match3
 {
@@ -17,8 +18,8 @@ namespace Match3
                 var contentSearchPaths = new List<string>() { "Fonts", "Sounds" };
                 CCSizeI viewSize = gameView.ViewSize;
 
-                int width = 1024;
-                int height = 768;
+                int width = 768;
+                int height = 1024;
 
                 // Set world dimensions
                 gameView.DesignResolution = new CCSizeI(width, height);
@@ -39,8 +40,8 @@ namespace Match3
 
                 gameView.ContentManager.SearchPaths = contentSearchPaths;
 
-                CCScene gameScene = new CCScene(gameView);
-                gameScene.AddLayer(new GameLayer());
+                CCScene gameScene = new TitleScene(gameView);
+                //gameScene.AddLayer(new GameLayer());
                 gameView.RunWithScene(gameScene);
             }
         }
