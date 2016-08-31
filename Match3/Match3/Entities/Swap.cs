@@ -1,7 +1,6 @@
 using CocosSharp;
-using Match3.Entities;
 
-namespace Match3
+namespace Match3.Entities
 {
     class Swap : CCNode
     {

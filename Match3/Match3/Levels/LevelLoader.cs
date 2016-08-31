@@ -9,6 +9,7 @@
 using System.Reflection;
 using System.IO;
 using Newtonsoft.Json;
+using Match3.Entities;
 
 namespace Match3.Levels
 {

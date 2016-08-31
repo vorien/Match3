@@ -15,7 +15,7 @@ namespace Match3
 
             if (gameView != null)
             {
-                var contentSearchPaths = new List<string>() { "Fonts", "Sounds" };
+                var contentSearchPaths = new List<string>() { "Fonts", "Sounds", "Images" };
                 CCSizeI viewSize = gameView.ViewSize;
 
                 int width = 768;
@@ -40,11 +40,11 @@ namespace Match3
 
                 gameView.ContentManager.SearchPaths = contentSearchPaths;
 
-                CCScene gameScene = new TitleScene(gameView);
-                //gameScene.AddLayer(new GameLayer());
+                CCScene gameScene = new CCScene(gameView);
+                gameScene.AddLayer(new GameLayer());
                 gameView.RunWithScene(gameScene);
             }
         }
-	
+
     }
 }

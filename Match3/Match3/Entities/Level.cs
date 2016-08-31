@@ -1,4 +1,4 @@
-namespace Match3
+namespace Match3.Entities
 {
     class Level
     {

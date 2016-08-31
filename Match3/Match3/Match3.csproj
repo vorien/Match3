@@ -33,17 +33,17 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Chain.cs" />
+    <Compile Include="Entities\Chain.cs" />
     <Compile Include="Entities\candies.cs" />
     <Compile Include="GameDelegate.cs" />
-    <Compile Include="Level.cs" />
+    <Compile Include="GameLayer.cs" />
+    <Compile Include="Entities\Level.cs" />
     <Compile Include="Levels\LevelLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\candyLayer.cs" />
-    <Compile Include="Scenes\GameLayer.cs" />
     <Compile Include="Scenes\GameScene.cs" />
     <Compile Include="Scenes\TitleScene.cs" />
-    <Compile Include="Swap.cs" />
+    <Compile Include="Entities\Swap.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="box2d, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
