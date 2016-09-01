@@ -211,6 +211,14 @@ namespace Match3
             }
         }
 
+        public static CCScene PlayCandyLayer(CCGameView gameView, int id)
+        {
+            CCScene scene = new CCScene(gameView);
+            CCLayer layer = new CandyLayer(id);
+            scene.AddChild(layer);
+            return scene;
+        }
+
         //  This method keep on filling up the grid until there's at least one possible swap that can be made
         public void shuffle()
         {

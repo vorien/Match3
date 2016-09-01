@@ -9,9 +9,14 @@ namespace Match3
 {
     public static class GameDelegate
     {
+        public static CCGameView gameView;
+        static CCDirector director;
+        public static CCScene gameScene;
+
         public static void LoadGame(object sender, EventArgs e)
         {
-            CCGameView gameView = sender as CCGameView;
+            gameView = sender as CCGameView;
+            director = new CCDirector();
 
             if (gameView != null)
             {
@@ -40,11 +45,26 @@ namespace Match3
 
                 gameView.ContentManager.SearchPaths = contentSearchPaths;
 
-                CCScene gameScene = new CCScene(gameView);
+                gameScene = new CCScene(gameView);
                 gameScene.AddLayer(new GameLayer());
                 gameView.RunWithScene(gameScene);
             }
         }
+
+
+        //// For this game we're just going to handle moving between scenes here
+        //// A larger game might have a "flow" object responsible for moving between
+        //// scenes.
+        //public static void StartLevel(int level)
+        //{
+        //    var scene = new TestScene(gameView);
+        //    director.ReplaceScene(scene);
+        //}
+
+        //public static void RestartGame()
+        //{
+        //    director.ReplaceScene(gameScene);
+        //}
 
     }
 }

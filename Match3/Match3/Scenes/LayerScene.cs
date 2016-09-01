@@ -5,7 +5,7 @@ using Match3.Entities;
 
 namespace Match3.Scenes
 {
-    public class GameScene : CCScene
+    public class LevelScene : CCScene
     {
         private CCScene gScene;
         private CCLayer backgroundLayer;
@@ -13,7 +13,7 @@ namespace Match3.Scenes
         private int swipeFromRow, swipeFromCol; // Keeps track of where the swipe started from
         private CCLabel debugLabel;
 
-        public GameScene(CCGameView gameView, int level) : base(gameView)
+        public LevelScene(CCGameView gameView, int level) : base(gameView)
         {
             gScene = new CCScene(gameView);
             addBackground();

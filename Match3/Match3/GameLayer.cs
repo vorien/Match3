@@ -4,13 +4,19 @@ using CocosSharp;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using Match3.Scenes;
+using Match3.Entities;
 
 namespace Match3
 {
     public class GameLayer : CCLayerColor
     {
         CCLayer backgroundLayer;
+        CCLayer labelLayer;
+        CCLayer buttonLayer;
         CCSprite background;
+        Button button;
+        public CCLabel label;
+       
 
         public GameLayer() : base(CCColor4B.Black)
         {
@@ -22,7 +28,29 @@ namespace Match3
             backgroundLayer.AddChild(background);
             AddChild(backgroundLayer);
 
-            addButtons();
+            labelLayer = new CCLayer();
+            label = new CCLabel("Match3 is running.", "Fonts/MarkerFelt", 22, CCLabelFormat.SpriteFont);
+            label.Color = CCColor3B.White;
+            label.Scale = 2.0f;
+            label.Position = new CCPoint(10, 1000);
+            label.AnchorPoint = CCPoint.AnchorUpperLeft;
+            labelLayer.AddChild(label);
+            AddChild(labelLayer);
+
+            buttonLayer = new CCLayer();
+            for (int i = 0; i < 5; i++)
+            {
+                button = new Button(i);
+                //Because we know there are 5 levels and the initial width is 768 pixels
+                //TODO: Make dynamic based on number of levels in levels directory
+                //var spaceBetween = ((768 - (5 * button.ScaledContentSize.Width)) / 6);
+                //label.Text = spaceBetween.ToString() + " - " + i.ToString();
+                //label.Text = button.ContentSize.Width.ToString() + " - " + button.ScaledContentSize.Width.ToString();
+                //var position = spaceBetween + (i * (spaceBetween + button.ScaledContentSize.Width));
+                //button.Position = new CCPoint(position, 800);
+                buttonLayer.AddChild(button);
+            }
+            AddChild(buttonLayer);
 
             CreateTouchListener();
         }
@@ -40,21 +68,6 @@ namespace Match3
             //AddEventListener(touchListener, this);
         }
 
-        private void addButtons()
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                var button = new CCSprite("button.png");
-                button.Position = new CCPoint(80 + (i * 120), 810);
-                var label = new CCLabel((i + 1).ToString(), "Arial", 30, CCLabelFormat.SystemFont);
-                label.Color = CCColor3B.Black;
-                label.PositionX = button.ContentSize.Width / 2.0f;
-                label.PositionY = button.ContentSize.Height / 2.0f;
-                button.AddChild(label);
-                AddChild(button);
-            }
-        }
-
         private void CreateTouchListener()
         {
             var touchListener = new CCEventListenerTouchAllAtOnce();
@@ -62,27 +75,15 @@ namespace Match3
             AddEventListener(touchListener);
         }
 
-        private bool buttonPressed(CCPoint location, ref int level)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                if ((location.Y >= 779 && location.Y < 841) && (location.X >= (49 + (i * 120)) && location.X <= (111 + (i * 120))))
-                {
-                    level = i;
-                    return true;
-                }
-            }
-            return false;
-        }
 
         private void HandleTouchesBegan(List<CCTouch> arg1, CCEvent arg2)
         {
-            int level = 0;
-            //  Determine if the user touched one of the buttons
-            if (buttonPressed(arg1[0].Location, ref level))
-            {
-                Director.PushScene(new GameScene(GameView, 1));
-            }
+            //int level = 0;
+            ////  Determine if the user touched one of the buttons
+            //if (buttonPressed(arg1[0].Location, ref level))
+            //{
+            //    Director.PushScene(new GameScene(GameView, 1));
+            //}
         }
     }
 }
