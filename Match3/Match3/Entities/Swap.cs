@@ -5,7 +5,7 @@ namespace Match3.Entities
     class Swap : CCNode
     {
         // candies that will be swapped
-        public candy candyA, candyB;
+        public Candy candyA, candyB;
 
         // This class is supposed to be a set of candies that can/(are to) be swapped
         public Swap()

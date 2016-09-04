@@ -11,11 +11,11 @@ namespace Match3.Scenes
     {
         private TestLayer testLayer;
         //private CCLabel debugLabel;
-        int levelid;
+        int levelID;
 
         public TestScene(CCGameView gameView, int level) : base(gameView)
         {
-            levelid = level;
+            levelID = level;
             testLayer = new TestLayer(level);
             AddChild(testLayer);
         }

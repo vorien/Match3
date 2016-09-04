@@ -45,9 +45,9 @@ namespace Match3
 
                 gameView.ContentManager.SearchPaths = contentSearchPaths;
 
-                gameScene = new CCScene(gameView);
-                gameScene.AddLayer(new GameLayer());
-                gameView.RunWithScene(gameScene);
+                //gameScene = new GameScene(gameView);
+                //gameScene.AddLayer(new GameLayer());
+                gameView.RunWithScene(new GameScene(gameView));
             }
         }
 

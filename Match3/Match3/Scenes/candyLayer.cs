@@ -5,38 +5,40 @@ using System.Threading.Tasks;
 using CocosSharp;
 using Match3.Entities;
 using Match3.Scenes;
-using Match3.Levels;
 
 namespace Match3
 {
     //  A class for a grid
     public class CandyLayer : CCLayer
     {
-        private candy[,] grid;
+        private Candy[,] grid;
         private Level level;
         private Random rand = new Random();
         private List<Swap> possibleSwaps;
         private List<Chain> deleteChains;
         private CCLabel debugLabel, scoreLabel, movesLeftLabel;
         private CCLayer tilesLayer;
-        private int gridRows, gridColumns, possibleSwapCount, movesLeft;
+        private int gridRows, gridColumns, possibleSwapCount, movesLeft, score, levelID;
         private bool dropped, filledAgain, finishedRemoving, doneShuffling; //, pointGone;
-        //private LevelLoader loader;
+        private LevelLoader loader;
 
         public CandyLayer(int lvl)
         {
+            levelID = lvl;
+
             gridColumns = 9;
             gridRows = 9;
             possibleSwapCount = 0;
-            grid = new candy[gridRows, gridColumns];
+            grid = new Candy[gridRows, gridColumns];
 
             //  Load the level
-            LevelLoader loader = new LevelLoader();
-            level = loader.LoadLevel(lvl);
+            loader = new LevelLoader();
+            level =  loader.LoadLevel(lvl);
             movesLeft = level.moves;
             addTiles();
             shuffle(); // fills the grid for the first time
 
+            score = 0;
             //  Add the labels to display score and the number of moves left
             addScoreLabel();
             addMovesLabel();
@@ -49,18 +51,18 @@ namespace Match3
         private void addScoreLabel()
         {
             //  Label to display the user's current score
-            scoreLabel = new CCLabel("0", "Arial", 130, CCLabelFormat.SystemFont);
+            scoreLabel = new CCLabel(score.ToString(), "Arial", 130, CCLabelFormat.SystemFont);
             scoreLabel.Color = CCColor3B.Green;
-            scoreLabel.AnchorPoint = new CCPoint(0, 0);
-            scoreLabel.Position = new CCPoint(540, 1000);
+            scoreLabel.AnchorPoint = CCPoint.AnchorUpperLeft;
+            scoreLabel.Position = new CCPoint(400, 1000);
             AddChild(scoreLabel);
 
-            //  Label to display the targetScore the user has to meet to beat the level
-            var targetLabel = new CCLabel("/" + level.targetScore.ToString(), "Arial", 50, CCLabelFormat.SystemFont);
-            targetLabel.Color = CCColor3B.Green;
-            targetLabel.AnchorPoint = new CCPoint(0, 0);
-            targetLabel.Position = new CCPoint(500, 980);
-            AddChild(targetLabel);
+            ////  Label to display the targetScore the user has to meet to beat the level
+            //var targetLabel = new CCLabel("/" + level.targetScore.ToString(), "Arial", 50, CCLabelFormat.SystemFont);
+            //targetLabel.Color = CCColor3B.Green;
+            //targetLabel.AnchorPoint = new CCPoint(0, 0);
+            //targetLabel.Position = new CCPoint(500, 980);
+            //AddChild(targetLabel);
         }
 
         //  Adds a lebel that will be used to display the amount of moves the user has left
@@ -68,8 +70,8 @@ namespace Match3
         {
             movesLeftLabel = new CCLabel(Convert.ToString(movesLeft), "Arial", 130, CCLabelFormat.SystemFont);
             movesLeftLabel.Color = CCColor3B.Blue;
-            movesLeftLabel.AnchorPoint = new CCPoint(0, 0);
-            movesLeftLabel.Position = new CCPoint(0, 1000);
+            movesLeftLabel.AnchorPoint = CCPoint.AnchorUpperLeft;
+            movesLeftLabel.Position = new CCPoint(20, 1000);
             AddChild(movesLeftLabel);
         }
 
@@ -77,13 +79,8 @@ namespace Match3
         private void addBackButton()
         {
             //  Add a back button
-            var button = new CCSprite("button.png");
-            button.Position = new CCPoint(50, 50);
-            var label = new CCLabel("BACK", "Arial", 20, CCLabelFormat.SystemFont);
-            label.Color = CCColor3B.Black;
-            label.PositionX = button.ContentSize.Width / 2.0f;
-            label.PositionY = button.ContentSize.Height / 2.0f;
-            button.AddChild(label);
+            var button = new BackButton();
+            button.Position = new CCPoint(25, 25) + new CCPoint(button.ScaledContentSize.Width / 2, button.ScaledContentSize.Height / 2);
             AddChild(button);
         }
 
@@ -113,111 +110,47 @@ namespace Match3
         public void decrementMoves()
         {
             movesLeft -= 1;
-            movesLeftLabel.Text = Convert.ToString(movesLeft);
-            if (movesLeft == 0 && Convert.ToInt32(scoreLabel.Text) < level.targetScore)
+            movesLeftLabel.Text = movesLeft.ToString();
+            if (movesLeft == 0 && score < level.targetScore)
             {
                 //  Since all of the moves were used, the game is over
-                gameOver();
+                GameOver(false);
             }
-            else if (movesLeft == 0 && Convert.ToInt32(scoreLabel.Text) >= level.targetScore)
+            else if (movesLeft == 0 && score >= level.targetScore)
             {
                 //  The user was able to get the required amount of points to pass the level
                 //  Display the winning notification and then take the user back to the titleScene
-                gameWon();
+                GameOver(true);
             }
         }
 
-        private void gameWon()
+        private void GameOver(bool win)
         {
-            CCLayer gameWon = new CCLayer();
-            var gameWonLabel = new CCLabel("Winner!", "Arial", 100, CCLabelFormat.SystemFont);
-            var drawNode = new CCDrawNode();
+            GameOverScene gameOverScene = new GameOverScene(GameView);
+            gameOverScene.win = win;
+            gameOverScene.id = levelID;
+            gameOverScene.score = score;
+            gameOverScene.needed = level.targetScore;
+            Director.ReplaceScene(gameOverScene);
+    }
 
-            //  Dim the screen
-            drawNode.DrawRect(new CCRect(-1000, -1000, 2000, 2000), new CCColor4B(0, 0, 0, 160));
-            gameWon.AddChild(drawNode);
-
-            //  Set the settings for the gameOverLabel
-            gameWonLabel.Color = CCColor3B.Red;
-            gameWonLabel.PositionX = gameWon.ContentSize.Width / 2.0f;
-            gameWonLabel.PositionY = gameWon.ContentSize.Height / 2.0f;
-            gameWon.AddChild(gameWonLabel);   // Add the label to the layer
-
-            //  Set the position of the layer
-            gameWon.PositionX = this.ContentSize.Width / 2.0f;
-            gameWon.PositionY = this.ContentSize.Height / 2.0f;
-
-            //  Add a Home button
-            var button = new CCSprite("button.png");
-            button.Position = new CCPoint(0, -368);
-            var label = new CCLabel("HOME", "Arial", 20, CCLabelFormat.SystemFont);
-            label.Color = CCColor3B.Black;
-            label.PositionX = button.ContentSize.Width / 2.0f;
-            label.PositionY = button.ContentSize.Height / 2.0f;
-            button.AddChild(label);
-            gameWon.AddChild(button);
-
-            AddChild(gameWon); //  Add the layer to the CandyLayer
-
-            var touchListener = new CCEventListenerTouchAllAtOnce();
-            touchListener.OnTouchesBegan = HandleTouchesBegan;
-            gameWon.AddEventListener(touchListener);
+    private void HandleTouchesBegan(List<CCTouch> arg1, CCEvent arg2)
+        {
+            //var location = arg1[0].Location;
+            ////  Determine if the user touched one of the buttons
+            //if ((location.X > 289 && location.X < 351) && (location.Y > 169 && location.Y < 231))
+            //{
+            //    Director.RunWithScene(new GameScene(GameView));
+            //}
         }
 
-        private void gameOver()
-        {
-            CCLayer gameOver = new CCLayer();
-            var gameOverLabel = new CCLabel("GAME OVER!", "Arial", 100, CCLabelFormat.SystemFont);
-            var drawNode = new CCDrawNode();
-
-            //  Dim the screen
-            drawNode.DrawRect(new CCRect(-1000, -1000, 2000, 2000), new CCColor4B(0, 0, 0, 160));
-            gameOver.AddChild(drawNode);
-
-            //  Set the settings for the gameOverLabel
-            gameOverLabel.Color = CCColor3B.Red;
-            gameOverLabel.PositionX = gameOver.ContentSize.Width / 2.0f;
-            gameOverLabel.PositionY = gameOver.ContentSize.Height / 2.0f;
-            gameOver.AddChild(gameOverLabel);   // Add the label to the layer
-
-            //  Set the position of the layer
-            gameOver.PositionX = this.ContentSize.Width / 2.0f;
-            gameOver.PositionY = this.ContentSize.Height / 2.0f;
-
-            //  Add a Home button
-            var button = new CCSprite("button.png");
-            button.Position = new CCPoint(0, -368);
-            var label = new CCLabel("HOME", "Arial", 20, CCLabelFormat.SystemFont);
-            label.Color = CCColor3B.Black;
-            label.PositionX = button.ContentSize.Width / 2.0f;
-            label.PositionY = button.ContentSize.Height / 2.0f;
-            button.AddChild(label);
-            gameOver.AddChild(button);
-
-            AddChild(gameOver); //  Add the layer to the CandyLayer
-
-            var touchListener = new CCEventListenerTouchAllAtOnce();
-            touchListener.OnTouchesBegan = HandleTouchesBegan;
-            gameOver.AddEventListener(touchListener);
-        }
-
-        private void HandleTouchesBegan(List<CCTouch> arg1, CCEvent arg2)
-        {
-            var location = arg1[0].Location;
-            //  Determine if the user touched one of the buttons
-            if ((location.X > 289 && location.X < 351) && (location.Y > 169 && location.Y < 231))
-            {
-                Director.PushScene(new TitleScene(GameView));
-            }
-        }
-
-        public static CCScene PlayCandyLayer(CCGameView gameView, int id)
-        {
-            CCScene scene = new CCScene(gameView);
-            CCLayer layer = new CandyLayer(id);
-            scene.AddChild(layer);
-            return scene;
-        }
+        //public static CCScene PlayCandyLayer(CCGameView gameView, int id)
+        //{
+        //    CCScene scene = new CCScene(gameView);
+        //    CCLayer layer = new CandyLayer(id);
+        //    scene.AddChild(layer);
+        //    return scene;
+        //}
 
         //  This method keep on filling up the grid until there's at least one possible swap that can be made
         public void shuffle()
@@ -253,7 +186,7 @@ namespace Match3
                 {
                     if (level.tiles[i, j] == 1)
                     {
-                        candy candy = candyAt(i, j);
+                        Candy candy = candyAt(i, j);
                         candy.RemoveFromParent();
                     }
                 }
@@ -292,10 +225,10 @@ namespace Match3
         //  candies should have no stripes when the level is first loaded
         public void assignCandy(int row, int col)
         {
-            candy newCandy;
+            Candy newCandy;
             do
             {
-                newCandy = new candy(rand, row, col);
+                newCandy = new Candy(rand, row, col);
             }
             while (((col >= 2 && grid[row, col - 1] != null && grid[row, col - 2] != null) && grid[row, col - 1].getType() == newCandy.getType() && grid[row, col - 2].getType() == newCandy.getType())
                 || ((row >= 2 && grid[row - 1, col] != null && grid[row - 2, col] != null) && grid[row - 1, col].getType() == newCandy.getType() && grid[row - 2, col].getType() == newCandy.getType()));
@@ -321,7 +254,7 @@ namespace Match3
         }
 
         //  gets the candy that's at the given [row, col] position in the grid
-        public candy candyAt(int row, int col)
+        public Candy candyAt(int row, int col)
         {
             return grid[row, col];
         }
@@ -337,7 +270,7 @@ namespace Match3
                 for (int col = 0; col < gridColumns; col++)
                 {
                     //  Grab the candy from grid
-                    candy checkCandy = grid[row, col];
+                    Candy checkCandy = grid[row, col];
 
                     //  Make sure that there's a candy at the given grid location
                     if (checkCandy != null)
@@ -346,7 +279,7 @@ namespace Match3
                         if (col < gridColumns - 1)
                         {
                             //  Grab the candy to the right from the checkCandy
-                            candy otherCandy = grid[row, col + 1];
+                            Candy otherCandy = grid[row, col + 1];
                             if (otherCandy != null)
                             {
                                 //  Swap the candies
@@ -374,7 +307,7 @@ namespace Match3
                         if (row < gridRows - 1)
                         {
                             //  Grab the candy to the right from the checkCandy
-                            candy otherCandy = grid[row + 1, col];
+                            Candy otherCandy = grid[row + 1, col];
                             if (otherCandy != null)
                             {
                                 //  Swap the candies
@@ -462,7 +395,7 @@ namespace Match3
                 //debugLabel.Text = "Touch was within the grid.";
                 row = convertYToRow(location.Y);   //(846 - Convert.ToInt32(location.Y)) / 70;
                 col = convertXToColumn(location.X);    //(Convert.ToInt32(location.X) - 38) / 62;
-                candy debugCandy = candyAt(row, col);
+                Candy debugCandy = candyAt(row, col);
                 //debugLabel.Text = "Touched the candy at [" + debugCandy.getRow() + ", " + debugCandy.getColumn() + "]";
                 return true;
             }
@@ -490,8 +423,8 @@ namespace Match3
                 return;
             }
 
-            candy toCandy = candyAt(toRow, toCol);
-            candy fromCandy = candyAt(fromRow, fromCol);
+            Candy toCandy = candyAt(toRow, toCol);
+            Candy fromCandy = candyAt(fromRow, fromCol);
             //debugLabel.Text = "Switching candy at [" + fromRow + ", " + fromCol + "] with candy at [" + toRow + ", " + toCol + "].";
 
             Swap swap = new Swap();
@@ -656,7 +589,7 @@ namespace Match3
 
             foreach (Chain chain in chains)
             {
-                foreach (candy candy in chain.candies)
+                foreach (Candy candy in chain.candies)
                 {
                     //  Remove the candy from the grid
                     grid[candy.getRow(), candy.getColumn()] = null;
@@ -718,8 +651,8 @@ namespace Match3
                 {
                     if (level.tiles[row, col] == 1)
                     {
-                        candy Candy = candyAt(row, col);
-                        if (Candy == null)
+                        Candy candy = candyAt(row, col);
+                        if (candy == null)
                         {
                             // Find which row number to drop the candy from
                             int tempRow = row - 1;
@@ -731,10 +664,10 @@ namespace Match3
                             if (tempRow >= 0)
                             {
                                 CCPoint position = new CCPoint(70 + (62 * col), 810 - (70 * row));
-                                Candy = candyAt(tempRow, col);
-                                Candy.AddAction(new CCEaseOut(new CCMoveTo(0.3f, position), 0.3f));
-                                Candy.setPosition(row, col);    // Update the row and column of the candy
-                                grid[row, col] = Candy;             // Update the position of the candy within the grid
+                                candy = candyAt(tempRow, col);
+                                candy.AddAction(new CCEaseOut(new CCMoveTo(0.3f, position), 0.3f));
+                                candy.setPosition(row, col);    // Update the row and column of the candy
+                                grid[row, col] = candy;             // Update the position of the candy within the grid
                                 grid[tempRow, col] = null;
                                 //  Wait for the candy to drop before moving to on the next candy
                                 await Task.Delay(50);
@@ -767,12 +700,12 @@ namespace Match3
                         int newCandyType = 0;
                         //  Have to first create a new candy outside of the while loop or otherwise the IDE won't let me use the variable newCandy
                         //  as it will be seen as using an unassigned variable, even though it will be assigned a new candy in the while loop
-                        candy newCandy = new candy(rand, row, col);
+                        Candy newCandy = new Candy(rand, row, col);
                         newCandyType = newCandy.getType();
                         //  Make sure that each candy that is being added isn't the same as the one that was added previously
                         while (newCandyType == candyType)
                         {
-                            newCandy = new candy(rand, row, col);
+                            newCandy = new Candy(rand, row, col);
                             newCandyType = newCandy.getType();
                         }
                         candyType = newCandyType;
@@ -793,18 +726,18 @@ namespace Match3
         {
             var points = Convert.ToInt32(scoreLabel.Text);
             points += 10;
-            if (points < 100)
-            {
-                scoreLabel.Position = new CCPoint(480, 1000);
-            }
-            else if (points >= 100 && points < 1000)
-            {
-                scoreLabel.Position = new CCPoint(400, 1000);
-            }
-            else if (points >= 1000 && points < 10000)
-            {
-                scoreLabel.Position = new CCPoint(320, 1000);
-            }
+            //if (points < 100)
+            //{
+            //    scoreLabel.Position = new CCPoint(480, 1000);
+            //}
+            //else if (points >= 100 && points < 1000)
+            //{
+            //    scoreLabel.Position = new CCPoint(400, 1000);
+            //}
+            //else if (points >= 1000 && points < 10000)
+            //{
+            //    scoreLabel.Position = new CCPoint(320, 1000);
+            //}
             scoreLabel.Text = Convert.ToString(points);
         }
 

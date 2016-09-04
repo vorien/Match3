@@ -6,7 +6,7 @@ namespace Match3.Entities
 {
     class Chain : CCNode
     {
-        public List<candy> candies;
+        public List<Candy> candies;
         public ChainType chainType;
 
         public enum ChainType
@@ -16,10 +16,10 @@ namespace Match3.Entities
 
         public Chain()
         {
-            candies = new List<candy>();
+            candies = new List<Candy>();
         }
 
-        public void addCandy(candy candy)
+        public void addCandy(Candy candy)
         {
             candies.Add(candy);
         }

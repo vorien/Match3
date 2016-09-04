@@ -6,7 +6,7 @@ namespace Match3.Entities
 {
     // Class that creates one of several different candies,
     // it will contain private variables for it's Name, location, and whether or not it's a special candy
-    public class candy : CCNode
+    public class Candy : CCNode
     {
         private string candyName;
         private CCSprite candySprite;   // sprite for the candy
@@ -19,7 +19,7 @@ namespace Match3.Entities
 
         // default constructor
         // generates a random candy
-        public candy(Random r, int gRow, int gCol)
+        public Candy(Random r, int gRow, int gCol)
         {
             string[] candyTypes = { "Peppermint Swirl", "Blue Jolly Rancher", "Candy Corn", "Purple Nerd", "Green Elliptical" };
             candyType = generateCandyType(r);
@@ -42,6 +42,7 @@ namespace Match3.Entities
             ////debugLabel.Position = new CCPoint(10, 10);
             //debugLabel.AnchorPoint = new CCPoint(0, 0);
             //candySprite.AddChild(debugLabel);
+            candySprite.Scale = 2.0f;
             AddChild(candySprite);
         }
 

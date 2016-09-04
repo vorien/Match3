@@ -10,27 +10,22 @@ using Match3;
 
 namespace Match3.Entities
 {
-    public class Button : CCNode
+    public class HomeButton : CCNode
     {
-        CCSprite sprite;
-        int levelid;
 
-        public Button(int id)
+        CCSprite sprite;
+        public HomeButton()
         {
-            levelid = id;
             sprite = new CCSprite("button");
-            sprite.AnchorPoint = CCPoint.AnchorMiddleLeft;
-            sprite.Scale = 3.0f;
-            var label = new CCLabel((id + 1).ToString(), "Arial", 30, CCLabelFormat.SystemFont);
+            sprite.ContentSize = new CCSize(sprite.ContentSize.Width * 2, sprite.ContentSize.Height * 2);
+            sprite.AnchorPoint = CCPoint.AnchorMiddle;
+            sprite.Scale = 2.5f;
+            //sprite.Position = new CCPoint(50, 0);
+            var label = new CCLabel("HOME", "Arial", 20, CCLabelFormat.SystemFont);
             label.Color = CCColor3B.Black;
             label.PositionX = sprite.ContentSize.Width / 2.0f;
             label.PositionY = sprite.ContentSize.Height / 2.0f;
             sprite.AddChild(label);
-            //Because we know there are 5 levels and the initial width is 768 pixels
-            //TODO: Make dynamic based on number of levels in levels directory
-            var spaceBetween = ((768 - (5 * sprite.ScaledContentSize.Width)) / 6);
-            var position = spaceBetween + (id * (spaceBetween + sprite.ScaledContentSize.Width));
-            sprite.Position = new CCPoint(position, 800);
             AddChild(sprite);
         }
         protected override void AddedToScene()
@@ -46,13 +41,12 @@ namespace Match3.Entities
         {
             if (sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
             {
-                Debug.WriteLine("Button pressed: " + levelid.ToString());
-                Director.ReplaceScene(new TestScene(GameView, levelid));
+                Debug.WriteLine("Home Button Touched");
+                Director.ReplaceScene(new GameScene(GameView));
                 return true;
             }
             else
             {
-                Debug.WriteLine("Button NOT pressed: " + levelid);
                 return false;
             }
         }

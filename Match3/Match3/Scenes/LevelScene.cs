@@ -7,17 +7,17 @@ namespace Match3.Scenes
 {
     public class LevelScene : CCScene
     {
-        private CCScene gScene;
-        private CCLayer backgroundLayer;
-        private CandyLayer cLayer;
+        //private CCLayer backgroundLayer;
+        private CandyLayer candyLayer;
         private int swipeFromRow, swipeFromCol; // Keeps track of where the swipe started from
         private CCLabel debugLabel;
 
         public LevelScene(CCGameView gameView, int level) : base(gameView)
         {
-            gScene = new CCScene(gameView);
-            addBackground();
-            addCandyLayer(level);
+            //backgroundLayer = new BackgroundLayer();
+            //AddChild(backgroundLayer, 0);
+            candyLayer = new CandyLayer(level);
+            AddChild(candyLayer, 1);
             //addDebug();
             swipeFromRow = swipeFromCol = 90;   //initializes the variables to 90 even though this isn't a valid location in the grid
             CreateTouchListener();
@@ -29,23 +29,7 @@ namespace Match3.Scenes
             debugLabel.Color = CCColor3B.Red;
             debugLabel.AnchorPoint = new CCPoint(0, 0);
             debugLabel.Position = new CCPoint(0, 30);
-            cLayer.AddChild(debugLabel);
-        }
-
-        private void addBackground()
-        {
-            backgroundLayer = new CCLayer();
-            var background = new CCSprite("background");
-            background.AnchorPoint = new CCPoint(0, 0);
-            background.IsAntialiased = false;
-            backgroundLayer.AddChild(background);
-            AddChild(backgroundLayer);
-        }
-
-        private void addCandyLayer(int level)
-        {
-            cLayer = new CandyLayer(level);
-            AddChild(cLayer);
+            candyLayer.AddChild(debugLabel);
         }
 
         private void CreateTouchListener()
@@ -55,7 +39,7 @@ namespace Match3.Scenes
             touchListener.OnTouchesBegan = HandleTouchesBegan;
             touchListener.OnTouchesEnded = touchesEnded;
             touchListener.OnTouchesCancelled = touchesCancelled;
-            cLayer.AddEventListener(touchListener);
+            candyLayer.AddEventListener(touchListener);
         }
 
         private void HandleTouchesBegan(List<CCTouch> touches, CCEvent touchEvent)
@@ -65,9 +49,9 @@ namespace Match3.Scenes
             //debugLabel.Text = "The user touched the screen.";
             int row = 90, col = 90;
             //  Checks to see if the touch was within the grid
-            if (cLayer.convertToPoint(location, ref row, ref col))
+            if (candyLayer.convertToPoint(location, ref row, ref col))
             {
-                candy candy = cLayer.candyAt(row, col);
+                Candy candy = candyLayer.candyAt(row, col);
                 if (candy != null)
                 {
                     swipeFromRow = candy.getRow();
@@ -93,7 +77,7 @@ namespace Match3.Scenes
 
             int column, row;
             row = column = 90;
-            if (cLayer.convertToPoint(locationOnScreen, ref row, ref column))
+            if (candyLayer.convertToPoint(locationOnScreen, ref row, ref column))
             {
 
                 int horzDelta = 0, vertDelta = 0;
@@ -118,8 +102,8 @@ namespace Match3.Scenes
                 {
                     //debugLabel.Text = "Checking to see if the swap is valid.";
                     //  Turn off the user interaction as the user should be allowed to move any of candies while candies are swapped, removed, and the grid refilled
-                    cLayer.disableListeners();
-                    cLayer.trySwap(horzDelta, vertDelta, swipeFromRow, swipeFromCol);
+                    candyLayer.disableListeners();
+                    candyLayer.trySwap(horzDelta, vertDelta, swipeFromRow, swipeFromCol);
                 }
             }
         }
