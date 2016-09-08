@@ -43,17 +43,17 @@
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CocosSharp, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CocosSharp.1.7.0.0-pre1\lib\MonoAndroid10\CocosSharp.dll</HintPath>
+    <Reference Include="CocosSharp, Version=1.7.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CocosSharp.1.7.1.0\lib\MonoAndroid10\CocosSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Lidgren.Network, Version=2012.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CocosSharp.1.7.0.0-pre1\lib\MonoAndroid10\Lidgren.Network.dll</HintPath>
+      <HintPath>..\..\packages\CocosSharp.1.7.1.0\lib\MonoAndroid10\Lidgren.Network.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="MonoGame.Framework, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CocosSharp.1.7.0.0-pre1\lib\MonoAndroid10\MonoGame.Framework.dll</HintPath>
+      <HintPath>..\..\packages\CocosSharp.1.7.1.0\lib\MonoAndroid10\MonoGame.Framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
@@ -72,7 +72,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Content\Fonts\MarkerFelt-22.xnb" />
-    <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
@@ -101,31 +100,31 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Content\Images\background.png" />
+    <AndroidAsset Include="Assets\Content\Images\background.xnb" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Content\Images\banner.png" />
+    <AndroidAsset Include="Assets\Content\Images\banner.xnb" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Content\Images\BlueJollyRancher.png" />
+    <AndroidAsset Include="Assets\Content\Images\BlueJollyRancher.xnb" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Content\Images\button.png" />
+    <AndroidAsset Include="Assets\Content\Images\button.xnb" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Content\Images\CandyCorn.png" />
+    <AndroidAsset Include="Assets\Content\Images\CandyCorn.xnb" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Content\Images\GreenElliptical.png" />
+    <AndroidAsset Include="Assets\Content\Images\GreenElliptical.xnb" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Content\Images\PeppermintSwirl.png" />
+    <AndroidAsset Include="Assets\Content\Images\PeppermintSwirl.xnb" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Content\Images\PurpleNerds.png" />
+    <AndroidAsset Include="Assets\Content\Images\PurpleNerds.xnb" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Content\Images\tile.png" />
+    <AndroidAsset Include="Assets\Content\Images\tile.xnb" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

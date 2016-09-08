@@ -42,7 +42,7 @@ namespace Match3.Entities
             if (sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
             {
                 Debug.WriteLine("Home Button Touched");
-                Director.ReplaceScene(new GameScene(GameView));
+                Director.ReplaceScene(new StartScene(GameView));
                 return true;
             }
             else

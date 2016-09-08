@@ -41,7 +41,7 @@ namespace Match3.Entities
         {
             if (sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
             {
-                Director.ReplaceScene(new GameScene(GameView));
+                Director.ReplaceScene(new StartScene(GameView));
                 return true;
             }
             else

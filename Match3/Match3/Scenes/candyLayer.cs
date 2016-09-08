@@ -51,12 +51,14 @@ namespace Match3
         private void addScoreLabel()
         {
             //  Label to display the user's current score
-            scoreLabel = new CCLabel(score.ToString(), "Arial", 130, CCLabelFormat.SystemFont);
+            scoreLabel = new CCLabel(score.ToString(), "Arial", 70, CCLabelFormat.SystemFont);
             scoreLabel.Color = CCColor3B.Green;
             scoreLabel.AnchorPoint = CCPoint.AnchorUpperLeft;
-            scoreLabel.Position = new CCPoint(400, 1000);
+            scoreLabel.Position = new CCPoint(100, ScreenInfo.preferredHeight - 100);
             AddChild(scoreLabel);
+        }
 
+        private void addTargetLabel() {
             ////  Label to display the targetScore the user has to meet to beat the level
             //var targetLabel = new CCLabel("/" + level.targetScore.ToString(), "Arial", 50, CCLabelFormat.SystemFont);
             //targetLabel.Color = CCColor3B.Green;
@@ -68,10 +70,10 @@ namespace Match3
         //  Adds a lebel that will be used to display the amount of moves the user has left
         private void addMovesLabel()
         {
-            movesLeftLabel = new CCLabel(Convert.ToString(movesLeft), "Arial", 130, CCLabelFormat.SystemFont);
+            movesLeftLabel = new CCLabel(Convert.ToString(movesLeft), "Arial", 70, CCLabelFormat.SystemFont);
             movesLeftLabel.Color = CCColor3B.Blue;
-            movesLeftLabel.AnchorPoint = CCPoint.AnchorUpperLeft;
-            movesLeftLabel.Position = new CCPoint(20, 1000);
+            movesLeftLabel.AnchorPoint = CCPoint.AnchorUpperRight;
+            movesLeftLabel.Position = new CCPoint(ScreenInfo.preferredWidth - 100, ScreenInfo.preferredHeight -100);
             AddChild(movesLeftLabel);
         }
 
@@ -98,7 +100,7 @@ namespace Match3
                     if (level.tiles[i, j] == 1)
                     {
                         tile = new CCSprite("tile");
-                        tile.Position = new CCPoint(70 + (width * j), 810 - (height * i));
+                        tile.Position = new CCPoint(height + (width * j), 810 - (height * i));
                         tilesLayer.AddChild(tile);
                     }
                 }

@@ -15,6 +15,7 @@ namespace Match3.Entities
         CCSprite sprite;
         int levelID;
         int levelct;
+        CCLabel label;
 
         public LevelButton(int id, int levelcount)
         {
@@ -22,17 +23,17 @@ namespace Match3.Entities
             levelct = levelcount;
             sprite = new CCSprite("button");
             sprite.AnchorPoint = CCPoint.AnchorMiddleLeft;
-            sprite.Scale = 3.0f;
-            var label = new CCLabel((id + 1).ToString(), "Arial", 30, CCLabelFormat.SystemFont);
+            float space = ScreenInfo.preferredWidth / ((levelcount * 3) + 1);
+            sprite.ContentSize = new CCSize(space * 2, space * 2);
+            //sprite.Scale = 3.0f;
+            label = new CCLabel((id + 1).ToString(), "Arial", 30, CCLabelFormat.SystemFont);
             label.Color = CCColor3B.Black;
             label.PositionX = sprite.ContentSize.Width / 2.0f;
             label.PositionY = sprite.ContentSize.Height / 2.0f;
-            sprite.AddChild(label);
-            //Because we know there are 5 levels and the initial width is 768 pixels
-            //TODO: Make dynamic based on number of levels in levels directory
-            var spaceBetween = ((768 - (levelcount * sprite.ScaledContentSize.Width)) / (levelcount + 1));
-            var position = spaceBetween + (id * (spaceBetween + sprite.ScaledContentSize.Width));
-            sprite.Position = new CCPoint(position, 800);
+            sprite.AddChild(label, 1);
+            float positionX = space + (id * (space * 3));
+            float positionY = ScreenInfo.preferredHeight * .5f;
+            sprite.Position = new CCPoint(positionX, positionY);
             AddChild(sprite);
         }
         protected override void AddedToScene()
@@ -49,7 +50,7 @@ namespace Match3.Entities
             if (sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
             {
                 Debug.WriteLine("Button pressed: " + levelID.ToString());
-                Director.ReplaceScene(new LevelScene(GameView, levelID));
+                Director.ReplaceScene(new GameScene(GameView, levelID));
                 return true;
             }
             else

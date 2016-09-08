@@ -42,7 +42,7 @@ namespace Match3.Entities
             ////debugLabel.Position = new CCPoint(10, 10);
             //debugLabel.AnchorPoint = new CCPoint(0, 0);
             //candySprite.AddChild(debugLabel);
-            candySprite.Scale = 2.0f;
+            //candySprite.Scale = 2.0f;
             AddChild(candySprite);
         }
 
