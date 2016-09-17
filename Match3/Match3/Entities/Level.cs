@@ -1,6 +1,6 @@
 namespace Match3.Entities
 {
-    class Level
+    public class Level
     {
         public int[,] tiles { get; set; }
         public int targetScore { get; set; }

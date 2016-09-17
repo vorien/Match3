@@ -1,92 +1,77 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using CocosSharp;
 using Match3.Entities;
-using Match3.Scenes;
+using Match3;
+using Match3.Information;
 
-namespace Match3
+namespace Match3.Scenes
 {
     //  A class for a grid
-    public class CandyLayer : CCLayer
+    public class GridLayer : CCLayer
     {
+        private HomeButton homeButton;
+        private CCLayer scoreLayer, targetLayer, movesLeftLayer;
+
         private Candy[,] grid;
-        private Level level;
         private Random rand = new Random();
         private List<Swap> possibleSwaps;
         private List<Chain> deleteChains;
-        private CCLabel debugLabel, scoreLabel, movesLeftLabel;
         private CCLayer tilesLayer;
-        private int gridRows, gridColumns, possibleSwapCount, movesLeft, score, levelID;
+        private int possibleSwapCount;
         private bool dropped, filledAgain, finishedRemoving, doneShuffling; //, pointGone;
-        private LevelLoader loader;
 
-        public CandyLayer(int lvl)
+        private Level level;
+
+        public GridLayer()
         {
-            levelID = lvl;
+            scoreLayer = new ScoreLayer();
+            AddChild(scoreLayer, 0, 1);
 
-            gridColumns = 9;
-            gridRows = 9;
+            targetLayer = new TargetLayer();
+            AddChild(targetLayer);
+
+            movesLeftLayer = new MovesLeftLayer();
+            AddChild(movesLeftLayer);
+
+            //CCLayer testLayer = new TestLayer();
+            //AddChild(testLayer);
+
+            homeButton = new HomeButton();
+            AddChild(homeButton);
+
+            level = ActiveLevel.level;
+
+            string parentString = "Still Testing";
+
+            CCLayer testLayer = new CCLayer();
+            CCLabel testLabel = new CCLabel(parentString, "Arial", 50, CCLabelFormat.SystemFont);
+            testLabel.Color = CCColor3B.White;
+            testLabel.AnchorPoint = CCPoint.AnchorMiddle;
+            testLabel.Position = new CCPoint(ScreenInfo.preferredWidth / 2, ScreenInfo.preferredHeight / 2);
+            testLayer.AddChild(testLabel);
+            AddChild(testLayer);
             possibleSwapCount = 0;
-            grid = new Candy[gridRows, gridColumns];
+            grid = new Candy[Configuration.gridRows, Configuration.gridColumns];
+            //addTiles();
 
-            //  Load the level
-            loader = new LevelLoader();
-            level =  loader.LoadLevel(lvl);
-            movesLeft = level.moves;
-            addTiles();
-            shuffle(); // fills the grid for the first time
-
-            score = 0;
-            //  Add the labels to display score and the number of moves left
-            addScoreLabel();
-            addMovesLabel();
-
-            //  Add a back button
-            addBackButton();
         }
 
-        //  Adds a label that will be used to display the score
-        private void addScoreLabel()
+        protected override void AddedToScene()
         {
-            //  Label to display the user's current score
-            scoreLabel = new CCLabel(score.ToString(), "Arial", 70, CCLabelFormat.SystemFont);
-            scoreLabel.Color = CCColor3B.Green;
-            scoreLabel.AnchorPoint = CCPoint.AnchorUpperLeft;
-            scoreLabel.Position = new CCPoint(100, ScreenInfo.preferredHeight - 100);
-            AddChild(scoreLabel);
+            base.AddedToScene();
+            //var bounds = VisibleBoundsWorldspace;
+
+            //label.Text = Director.RunningScene.ContentSize.Width.ToString();
+            //buttonLayer.ContentSize = new CCSize(ScreenInfo.preferredWidth, ScreenInfo.preferredHeight);
+            //// Register for touch events
+            //var touchListener = new CCEventListenerTouchAllAtOnce();
+            //touchListener.OnTouchesEnded = OnTouchesEnded;
+            //AddEventListener(touchListener, this);
         }
 
-        private void addTargetLabel() {
-            ////  Label to display the targetScore the user has to meet to beat the level
-            //var targetLabel = new CCLabel("/" + level.targetScore.ToString(), "Arial", 50, CCLabelFormat.SystemFont);
-            //targetLabel.Color = CCColor3B.Green;
-            //targetLabel.AnchorPoint = new CCPoint(0, 0);
-            //targetLabel.Position = new CCPoint(500, 980);
-            //AddChild(targetLabel);
-        }
-
-        //  Adds a lebel that will be used to display the amount of moves the user has left
-        private void addMovesLabel()
-        {
-            movesLeftLabel = new CCLabel(Convert.ToString(movesLeft), "Arial", 70, CCLabelFormat.SystemFont);
-            movesLeftLabel.Color = CCColor3B.Blue;
-            movesLeftLabel.AnchorPoint = CCPoint.AnchorUpperRight;
-            movesLeftLabel.Position = new CCPoint(ScreenInfo.preferredWidth - 100, ScreenInfo.preferredHeight -100);
-            AddChild(movesLeftLabel);
-        }
-
-        //  Adds a Back button to go back to the level select scene
-        private void addBackButton()
-        {
-            //  Add a back button
-            var button = new BackButton();
-            button.Position = new CCPoint(25, 25) + new CCPoint(button.ScaledContentSize.Width / 2, button.ScaledContentSize.Height / 2);
-            AddChild(button);
-        }
-
-        //  Adds a layer to the CandyLayer that will exclusively hold the sprites for the tiles
         private void addTiles()
         {
             tilesLayer = new CCLayer();
@@ -111,32 +96,30 @@ namespace Match3
         //  Decrement the number of moves left and update the text in the movesLeftLabel
         public void decrementMoves()
         {
-            movesLeft -= 1;
-            movesLeftLabel.Text = movesLeft.ToString();
-            if (movesLeft == 0 && score < level.targetScore)
-            {
-                //  Since all of the moves were used, the game is over
-                GameOver(false);
-            }
-            else if (movesLeft == 0 && score >= level.targetScore)
-            {
-                //  The user was able to get the required amount of points to pass the level
-                //  Display the winning notification and then take the user back to the titleScene
-                GameOver(true);
-            }
+            //    Parent.Children.
+            //    movesLeft -= 1;
+            //    movesLeftLabel.Text = movesLeft.ToString();
+            //    if (movesLeft == 0 && score < level.targetScore)
+            //    {
+            //        //  Since all of the moves were used, the game is over
+            //        GameOver(false);
+            //    }
+            //    else if (movesLeft == 0 && score >= level.targetScore)
+            //    {
+            //        //  The user was able to get the required amount of points to pass the level
+            //        //  Display the winning notification and then take the user back to the titleScene
+            //        GameOver(true);
+            //    }
         }
 
-        private void GameOver(bool win)
+    private void GameOver(bool win)
         {
             GameOverScene gameOverScene = new GameOverScene(GameView);
             gameOverScene.win = win;
-            gameOverScene.id = levelID;
-            gameOverScene.score = score;
-            gameOverScene.needed = level.targetScore;
             Director.ReplaceScene(gameOverScene);
-    }
+        }
 
-    private void HandleTouchesBegan(List<CCTouch> arg1, CCEvent arg2)
+        private void HandleTouchesBegan(List<CCTouch> arg1, CCEvent arg2)
         {
             //var location = arg1[0].Location;
             ////  Determine if the user touched one of the buttons
@@ -182,9 +165,9 @@ namespace Match3
 
             await Task.Delay(500);
             //  Remove all of the old candies from the screen
-            for (int i = 0; i < gridRows; i++)
+            for (int i = 0; i < Configuration.gridRows; i++)
             {
-                for (int j = 0; j < gridColumns; j++)
+                for (int j = 0; j < Configuration.gridColumns; j++)
                 {
                     if (level.tiles[i, j] == 1)
                     {
@@ -202,9 +185,9 @@ namespace Match3
         //  Fills the grid up with new candies
         public void fillGrid()
         {
-            for (int i = 0; i < gridRows; i++)
+            for (int i = 0; i < Configuration.gridRows; i++)
             {
-                for (int j = 0; j < gridColumns; j++)
+                for (int j = 0; j < Configuration.gridColumns; j++)
                 {
                     if (level.tiles[i, j] == 1)
                     {
@@ -215,13 +198,13 @@ namespace Match3
         }
 
         //  Adds a label that's used to display debug info
-        private void addDebug()
-        {
-            debugLabel = new CCLabel("Debug info shows here...", "Arial", 30, CCLabelFormat.SystemFont);
-            debugLabel.Color = CCColor3B.Black;
-            debugLabel.AnchorPoint = new CCPoint(0, 0);
-            AddChild(debugLabel);
-        }
+        //private void addDebug()
+        //{
+        //    debugLabel = new CCLabel("Debug info shows here...", "Arial", 30, CCLabelFormat.SystemFont);
+        //    debugLabel.Color = CCColor3B.Black;
+        //    debugLabel.AnchorPoint = new CCPoint(0, 0);
+        //    AddChild(debugLabel);
+        //}
 
         //  Assigns a candy at the grid location [row, col]
         //  candies should have no stripes when the level is first loaded
@@ -242,9 +225,9 @@ namespace Match3
         //  based on their position in the grid
         private void addCandies()
         {
-            for (int i = 0; i < gridRows; i++)
+            for (int i = 0; i < Configuration.gridRows; i++)
             {
-                for (int j = 0; j < gridColumns; j++)
+                for (int j = 0; j < Configuration.gridColumns; j++)
                 {
                     if (grid[i, j] != null)
                     {
@@ -267,9 +250,9 @@ namespace Match3
         {
             possibleSwaps = new List<Swap>();
             // for loop to go through the grid to find possible swaps
-            for (int row = 0; row < gridRows; row++)
+            for (int row = 0; row < Configuration.gridRows; row++)
             {
-                for (int col = 0; col < gridColumns; col++)
+                for (int col = 0; col < Configuration.gridColumns; col++)
                 {
                     //  Grab the candy from grid
                     Candy checkCandy = grid[row, col];
@@ -278,7 +261,7 @@ namespace Match3
                     if (checkCandy != null)
                     {
                         //  See if it's possible to swap to the right
-                        if (col < gridColumns - 1)
+                        if (col < Configuration.gridColumns - 1)
                         {
                             //  Grab the candy to the right from the checkCandy
                             Candy otherCandy = grid[row, col + 1];
@@ -306,7 +289,7 @@ namespace Match3
                         }
 
                         //  See if it's possible to swap below
-                        if (row < gridRows - 1)
+                        if (row < Configuration.gridRows - 1)
                         {
                             //  Grab the candy to the right from the checkCandy
                             Candy otherCandy = grid[row + 1, col];
@@ -361,7 +344,7 @@ namespace Match3
             {
                 horzLenght++;
             }
-            for (int i = col + 1; (i < gridColumns && grid[row, i] != null) && grid[row, i].getType() == cookieType; i++)
+            for (int i = col + 1; (i < Configuration.gridColumns && grid[row, i] != null) && grid[row, i].getType() == cookieType; i++)
             {
                 horzLenght++;
             }
@@ -378,7 +361,7 @@ namespace Match3
             {
                 vertLength++;
             }
-            for (int i = row + 1; (i < gridRows && grid[i, col] != null) && grid[i, col].getType() == cookieType; i++)
+            for (int i = row + 1; (i < Configuration.gridRows && grid[i, col] != null) && grid[i, col].getType() == cookieType; i++)
             {
                 vertLength++;
             }
@@ -416,11 +399,11 @@ namespace Match3
             int toCol = fromCol + horzDelta;
 
             //  Make sure that the user didn't swipe out of the grid as there isn't any candies to swap with out there
-            if (toRow < 0 || toRow >= gridRows)
+            if (toRow < 0 || toRow >= Configuration.gridRows)
             {
                 return;
             }
-            if (toCol < 0 || toCol >= gridColumns)
+            if (toCol < 0 || toCol >= Configuration.gridColumns)
             {
                 return;
             }
@@ -471,14 +454,14 @@ namespace Match3
                 decrementMoves();
 
                 // In the case that grid ends up with no possible swaps, we need to refill the grid new candies
-                if (possibleSwaps.Count == 0 && movesLeft != 0)
-                {
-                    reshuffle();
-                    while (!doneShuffling)
-                    {
-                        await Task.Delay(50);
-                    }
-                }
+                //if (possibleSwaps.Count == 0 && movesLeft != 0)
+                //{
+                //    reshuffle();
+                //    while (!doneShuffling)
+                //    {
+                //        await Task.Delay(50);
+                //    }
+                //}
             }
             else
             {
@@ -499,10 +482,10 @@ namespace Match3
                 }
             }
             //  Turn user interaction back on as all of the matches were removed and the grid filled back up
-            if (movesLeft != 0)
-            {
-                enableListeners();
-            }
+            //if (movesLeft != 0)
+            //{
+            //    enableListeners();
+            //}
         }
 
         public void disableListeners()
@@ -647,7 +630,7 @@ namespace Match3
             {
                 dropped = false;
             }
-            for (int col = 0; col < gridColumns; col++)
+            for (int col = 0; col < Configuration.gridColumns; col++)
             {
                 for (int row = 8; row > 0; row--)
                 {
@@ -692,10 +675,10 @@ namespace Match3
             {
                 filledAgain = false;
             }
-            for (int col = 0; col < gridColumns; col++)
+            for (int col = 0; col < Configuration.gridColumns; col++)
             {
                 //  Starting at the top and working downwards, add a new candy where it's needed
-                for (int row = 0; row < gridRows && grid[row, col] == null; row++)
+                for (int row = 0; row < Configuration.gridRows && grid[row, col] == null; row++)
                 {
                     if (level.tiles[row, col] == 1)
                     {
@@ -726,21 +709,21 @@ namespace Match3
 
         private void handlePoints()
         {
-            var points = Convert.ToInt32(scoreLabel.Text);
-            points += 10;
-            //if (points < 100)
-            //{
-            //    scoreLabel.Position = new CCPoint(480, 1000);
-            //}
-            //else if (points >= 100 && points < 1000)
-            //{
-            //    scoreLabel.Position = new CCPoint(400, 1000);
-            //}
-            //else if (points >= 1000 && points < 10000)
-            //{
-            //    scoreLabel.Position = new CCPoint(320, 1000);
-            //}
-            scoreLabel.Text = Convert.ToString(points);
+            //var points = Convert.ToInt32(scoreLabel.Text);
+            //points += 10;
+            ////if (points < 100)
+            ////{
+            ////    scoreLabel.Position = new CCPoint(480, 1000);
+            ////}
+            ////else if (points >= 100 && points < 1000)
+            ////{
+            ////    scoreLabel.Position = new CCPoint(400, 1000);
+            ////}
+            ////else if (points >= 1000 && points < 10000)
+            ////{
+            ////    scoreLabel.Position = new CCPoint(320, 1000);
+            ////}
+            //scoreLabel.Text = Convert.ToString(points);
         }
 
         //  Using an animation to add all of the new candies to screen
@@ -768,9 +751,9 @@ namespace Match3
         private List<Chain> detectHorizontalMatches()
         {
             var horzList = new List<Chain>();
-            for (int row = 0; row < gridRows; row++)
+            for (int row = 0; row < Configuration.gridRows; row++)
             {
-                for (int col = 0; col < gridColumns - 2;)
+                for (int col = 0; col < Configuration.gridColumns - 2;)
                 {
                     //  Makes sure that location in the grid isn't empty
                     if (grid[row, col] != null)
@@ -789,7 +772,7 @@ namespace Match3
                                 chain.addCandy(candyAt(row, col));
                                 col += 1;
                             }
-                            while ((col < gridColumns && grid[row, col] != null) && grid[row, col].getType() == matchType);
+                            while ((col < Configuration.gridColumns && grid[row, col] != null) && grid[row, col].getType() == matchType);
                             horzList.Add(chain);    // Add the chain to the list of horizontal chains
                         }
                     }
@@ -803,9 +786,9 @@ namespace Match3
         private List<Chain> detectVerticalMatches()
         {
             var vertList = new List<Chain>();
-            for (int col = 0; col < gridColumns; col++)
+            for (int col = 0; col < Configuration.gridColumns; col++)
             {
-                for (int row = 0; row < gridRows - 2;)
+                for (int row = 0; row < Configuration.gridRows - 2;)
                 {
                     //  Makes sure that the location in the grid isn't empty
                     if (grid[row, col] != null)
@@ -824,7 +807,7 @@ namespace Match3
                                 chain.addCandy(candyAt(row, col));
                                 row += 1;
                             }
-                            while ((row < gridRows && grid[row, col] != null) && grid[row, col].getType() == matchType);
+                            while ((row < Configuration.gridRows && grid[row, col] != null) && grid[row, col].getType() == matchType);
                             vertList.Add(chain);    // Add the chain to the list of vertical chains
                         }
                     }
@@ -844,6 +827,6 @@ namespace Match3
         private int convertXToColumn(float x)
         {
             return (Convert.ToInt32(x) - 38) / 62;
-        }        
+        }
     }
 }

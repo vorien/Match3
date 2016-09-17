@@ -28,8 +28,8 @@ namespace Match3
                 ScreenInfo.Height = viewSize.Height;
                 ScreenInfo.setFontSizes();
 
-                int width = ScreenInfo.preferredWidth;
-                int height = ScreenInfo.preferredHeight;
+                int width = (int)ScreenInfo.preferredWidth;
+                int height = (int)ScreenInfo.preferredHeight;
 
                 // Set world dimensions
                 gameView.DesignResolution = new CCSizeI(width, height);

@@ -17,15 +17,16 @@ namespace Match3.Entities
         public HomeButton()
         {
             sprite = new CCSprite("button");
-            sprite.ContentSize = new CCSize(sprite.ContentSize.Width * 2, sprite.ContentSize.Height * 2);
-            sprite.AnchorPoint = CCPoint.AnchorMiddle;
-            sprite.Scale = 2.5f;
+            sprite.ContentSize = new CCSize(100, 100);
+            sprite.AnchorPoint = CCPoint.AnchorMiddleBottom;
+            //sprite.Scale = 2.5f;
             //sprite.Position = new CCPoint(50, 0);
             var label = new CCLabel("HOME", "Arial", 20, CCLabelFormat.SystemFont);
             label.Color = CCColor3B.Black;
             label.PositionX = sprite.ContentSize.Width / 2.0f;
             label.PositionY = sprite.ContentSize.Height / 2.0f;
             sprite.AddChild(label);
+            sprite.Position = new CCPoint(ScreenInfo.preferredWidth / 2, 10);
             AddChild(sprite);
         }
         protected override void AddedToScene()

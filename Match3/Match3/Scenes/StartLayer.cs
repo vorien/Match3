@@ -26,8 +26,8 @@ namespace Match3
             //this.AddChild(drawNode, 4);
 
             //drawNode.DrawCircle(
-            //    center: new CCPoint(ScreenInfo.Width / 2, ScreenInfo.Height / 2),
-            //    radius: ScreenInfo.Width / 2,
+            //    center: new CCPoint(ScreenInfo.preferredWidth / 2, ScreenInfo.preferredHeight / 2),
+            //    radius: ScreenInfo.preferredWidth / 2,
             //    color: CCColor4B.White
             //    );
 
@@ -36,11 +36,9 @@ namespace Match3
             label = new CCLabel("Select a Level to Play... \n( Level 1 is a one-move test level)", "Arial", 36, CCLabelFormat.SystemFont);
             //label.SystemFontSize = 70;
             //label.Scale = ScreenInfo.Scale;
-            //label.Text = ScreenInfo.Width.ToString() + " - " + ScreenInfo.Scale.ToString();
+            //label.Text = ScreenInfo.preferredWidth.ToString() + " - " + ScreenInfo.Scale.ToString();
             label.Color = CCColor3B.White;
             label.HorizontalAlignment = CCTextAlignment.Center;
-            //label.Scale = 2.0f;
-            //label.Position = new CCPoint(Configuration.Width / 2, Configuration.Height - label.ContentSize.Height - 10);
             label.Position = new CCPoint(ScreenInfo.preferredWidth / 2, ScreenInfo.preferredHeight - label.ContentSize.Height - 10);
             label.AnchorPoint = CCPoint.AnchorMiddleTop;
             labelLayer.AddChild(label);
@@ -59,11 +57,11 @@ namespace Match3
 
         protected override void AddedToScene()
         {
-            //base.AddedToScene();
+            base.AddedToScene();
             //var bounds = VisibleBoundsWorldspace;
 
             //label.Text = Director.RunningScene.ContentSize.Width.ToString();
-            //buttonLayer.ContentSize = new CCSize(ScreenInfo.Width, ScreenInfo.Height);
+            //buttonLayer.ContentSize = new CCSize(ScreenInfo.preferredWidth, ScreenInfo.preferredHeight);
             //// Register for touch events
             //var touchListener = new CCEventListenerTouchAllAtOnce();
             //touchListener.OnTouchesEnded = OnTouchesEnded;

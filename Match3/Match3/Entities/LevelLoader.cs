@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using Match3.Information;
 
 namespace Match3.Entities
 {
@@ -20,11 +21,11 @@ namespace Match3.Entities
             levels.Add("{  'tiles' : [ [0, 0, 0, 0, 0, 0, 0, 0, 0 ], [0, 0, 0, 0, 0, 0, 0, 0, 0 ], [0, 0, 0, 0, 0, 0, 0, 0, 0 ], [0, 0, 0, 1, 1, 1, 0, 0, 0 ], [0, 0, 0, 1, 1, 1, 0, 0, 0 ], [0, 0, 0, 1, 1, 1, 0, 0, 0 ], [0, 0, 0, 0, 0, 0, 0, 0, 0 ], [0, 0, 0, 0, 0, 0, 0, 0, 0 ], [0, 0, 0, 0, 0, 0, 0, 0, 0 ] ],  'targetScore' : 600,  'moves' : 15}");
         }
 
-        public Level LoadLevel(int levelID) { 
-            Level level = new Level();
-            level = JsonConvert.DeserializeObject<Level>(levels[levelID]);
+        public void LoadLevel(int levelID) {
 
-            return level;
+            Level level = new Level();
+            ActiveLevel.level = JsonConvert.DeserializeObject<Level>(levels[levelID]);
+            ActiveLevel.id = levelID;
         }
     }
 }

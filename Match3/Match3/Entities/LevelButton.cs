@@ -50,7 +50,7 @@ namespace Match3.Entities
             if (sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
             {
                 Debug.WriteLine("Button pressed: " + levelID.ToString());
-                Director.ReplaceScene(new GameScene(GameView, levelID));
+                Director.ReplaceScene(new LevelScene(GameView, levelID));
                 return true;
             }
             else

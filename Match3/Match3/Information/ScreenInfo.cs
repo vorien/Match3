@@ -21,7 +21,7 @@ namespace Match3
         public static void setFontSizes()
         {
             float ratio = Height / preferredHeight;
-            fontLarge = 70 * ratio;
+            fontLarge = 60 * ratio;
             fontMedium = 50 * ratio;
             fontSmall = 30 * ratio;
             Scale = ratio;

@@ -33,6 +33,11 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Entities\Tile.cs" />
+    <Compile Include="Functions\GridFunctions.cs" />
+    <Compile Include="Functions\SwapFunctions.cs" />
+    <Compile Include="ActiveLevel.cs" />
+    <Compile Include="Information\Configuration.cs" />
     <Compile Include="Information\ScreenInfo.cs" />
     <Compile Include="Entities\ReplayButton.cs" />
     <Compile Include="Entities\HomeButton.cs" />
@@ -41,17 +46,23 @@
     <Compile Include="Entities\Chain.cs" />
     <Compile Include="Entities\Candy.cs" />
     <Compile Include="GameDelegate.cs" />
+    <Compile Include="Scenes\DebugLayer.cs" />
+    <Compile Include="Scenes\GridLayer.cs" />
+    <Compile Include="Scenes\LevelLayer.cs" />
     <Compile Include="Scenes\GameOverLayer.cs" />
+    <Compile Include="Scenes\MovesLeftLayer.cs" />
+    <Compile Include="Scenes\ScoreLayer.cs" />
     <Compile Include="Scenes\StartLayer.cs" />
     <Compile Include="Entities\Level.cs" />
     <Compile Include="Entities\LevelLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\BackgroundLayer.cs" />
-    <Compile Include="Scenes\CandyLayer.cs" />
     <Compile Include="Scenes\GameOverScene.cs" />
     <Compile Include="Scenes\StartScene.cs" />
-    <Compile Include="Scenes\GameScene.cs" />
+    <Compile Include="Scenes\LevelScene.cs" />
     <Compile Include="Entities\Swap.cs" />
+    <Compile Include="Scenes\TargetLayer.cs" />
+    <Compile Include="Scenes\TestLayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="box2d, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
