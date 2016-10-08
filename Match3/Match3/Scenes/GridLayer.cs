@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using CocosSharp;
 using Match3.Entities;
 using Match3;
-using Match3.Information;
 using Match3.Functions;
 
 namespace Match3.Scenes

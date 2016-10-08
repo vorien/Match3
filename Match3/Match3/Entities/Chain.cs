@@ -1,27 +1,45 @@
+using System;
 using System.Collections.Generic;
 
 using CocosSharp;
 
 namespace Match3.Entities
 {
-    class Chain : CCNode
+    public class Chain
     {
-        public List<Candy> candies;
         public ChainType chainType;
+        public int chainCount;
+        public int[] chainLengths = new int[2];
+        public string chainDirection;
 
         public enum ChainType
         {
-            Horizontal, Vertical
+            Horizontal, Vertical,
         };
 
-        public Chain()
+        public void UpdateChainLengths(string direction, int amount)
         {
-            candies = new List<Candy>();
+            if(direction == "Horizontal")
+            {
+                chainLengths[0] += amount;
+            }
+            else if(direction == "Vertical"){
+                chainLengths[1] += amount;
+            }
+            else
+            {
+                throw new System.Exception("Direction sent to update chain length must be Horizontal or Vertical");
+            }
         }
 
-        public void addCandy(Candy candy)
-        {
-            candies.Add(candy);
-        }
+        //public Chain()
+        //{
+        //    candies = new List<Candy>();
+        //}
+
+        //public void addCandy(Candy candy)
+        //{
+        //    candies.Add(candy);
+        //}
     }
 }

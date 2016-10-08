@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using CocosSharp;
 using Match3.Entities;
 using Match3.Scenes;
-using Match3.Information;
+using Match3;
 using Match3.Functions;
 
 namespace Match3
@@ -45,6 +45,7 @@ namespace Match3
             AddChild(movesLeftLayer);
             movesLeftLayer.Position = new CCPoint(ScreenInfo.preferredWidth - 20, ScreenInfo.preferredHeight - 20);
 
+            CCPoint blockOffset = new CCPoint(Configuration.gridWidthSpacing, Configuration.gridVerticalOffset);
             // Display background tiles
             tileLayer = new CCLayer();
             for (int gRow = 0; gRow < Configuration.gridRows; gRow++)
@@ -54,12 +55,11 @@ namespace Match3
                     if (ActiveLevel.level.tiles[gColumn, gRow] == 1)
                     {
                         Tile tile = new Tile();
-                        tile.Position = new CCPoint((tile.ContentSize.Width * (gRow + .5f)), tile.ContentSize.Height * (gColumn + .5f));
+                        tile.Position = new CCPoint((tile.ContentSize.Width * (gRow + .5f)), tile.ContentSize.Height * (gColumn + .5f)) + blockOffset;
                         tileLayer.AddChild(tile);
                     }
                 }
             }
-            tileLayer.Position = new CCPoint(Configuration.gridWidthSpacing, 120);
             AddChild(tileLayer);
 
             homeButton = new HomeButton();
@@ -68,7 +68,6 @@ namespace Match3
             level = ActiveLevel.level;
 
             gridLayer = new GridLayer(this);
-            gridLayer.Position = new CCPoint(Configuration.gridWidthSpacing, 120);
             AddChild(gridLayer);
 
 

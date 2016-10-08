@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using Match3.Information;
+using Match3;
 
 namespace Match3.Entities
 {
