@@ -45,7 +45,7 @@
     <Compile Include="Entities\HomeButton.cs" />
     <Compile Include="Entities\BackButton.cs" />
     <Compile Include="Entities\LevelButton.cs" />
-    <Compile Include="Entities\Candy.cs" />
+    <Compile Include="Entities\Material.cs" />
     <Compile Include="GameDelegate.cs" />
     <Compile Include="Scenes\DebugLayer.cs" />
     <Compile Include="Scenes\GridLayer.cs" />

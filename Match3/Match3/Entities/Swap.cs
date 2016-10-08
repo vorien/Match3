@@ -4,48 +4,48 @@ namespace Match3.Entities
 {
     class Swap : CCNode
     {
-        // candies that will be swapped
-        public Candy fromCandy, toCandy;
+        // materials that will be swapped
+        public Material fromMaterial, toMaterial;
         private CCPointI initialFromLocation, initialToLocation;
         private CCPoint initialFromPosition, initialToPosition;
 
-        // This class is supposed to be a set of candies that can/(are to) be swapped
-        public Swap(Candy from, Candy to)
+        // This class is supposed to be a set of materials that can/(are to) be swapped
+        public Swap(Material from, Material to)
         {
-            // initializes the two candy pointers to null
-            fromCandy = from;
-            toCandy = to;
-            initialFromLocation = fromCandy.gridLocation;
-            initialToLocation = toCandy.gridLocation;
-            initialFromPosition = fromCandy.Position;
-            initialToPosition = toCandy.Position;
+            // initializes the two material pointers to null
+            fromMaterial = from;
+            toMaterial = to;
+            initialFromLocation = fromMaterial.gridLocation;
+            initialToLocation = toMaterial.gridLocation;
+            initialFromPosition = fromMaterial.Position;
+            initialToPosition = toMaterial.Position;
 
-            //toCandy.debugLabel.Text = "TO";
+            //toMaterial.debugLabel.Text = "TO";
 
         }
 
         //  Visually animates the swap using the CCMoveTo function provided by CocosSharp,
-        //  also updates the grid location of the candies
+        //  also updates the grid location of the materials
 
         public void AnimateSwap()
         {
-            fromCandy.RunAction(new CCMoveTo(0.3f, initialToPosition));
-            toCandy.RunAction(new CCMoveTo(0.3f, initialFromPosition));
+            fromMaterial.RunAction(new CCMoveTo(0.3f, initialToPosition));
+            toMaterial.RunAction(new CCMoveTo(0.3f, initialFromPosition));
 
             //const float timeToTake = 0.3f; // in seconds
 
-            ////  Animate the swapping of the candies
+            ////  Animate the swapping of the materials
             //CCFiniteTimeAction swapFromToAction = new CCMoveTo(timeToTake, initialToLocation);
-            //fromCandy.AddAction(swapFromToAction);
+            //fromMaterial.AddAction(swapFromToAction);
             //CCFiniteTimeAction swapToFromAction = new CCMoveTo(timeToTake, initialFromLocation);
-            //toCandy.AddAction(swapToFromAction);
+            //toMaterial.AddAction(swapToFromAction);
 
-            //fromCandy.RunAction(swapFromToAction);
-            //toCandy.RunAction(swapToFromAction);
+            //fromMaterial.RunAction(swapFromToAction);
+            //toMaterial.RunAction(swapToFromAction);
 
-            ////  Update the row and column positions for each candy
-            //fromCandy.gridLocation = initialToLocation;
-            //toCandy.gridLocation = initialFromLocation;
+            ////  Update the row and column positions for each material
+            //fromMaterial.gridLocation = initialToLocation;
+            //toMaterial.gridLocation = initialFromLocation;
 
         }
 
@@ -56,17 +56,17 @@ namespace Match3.Entities
         //        CCFiniteTimeAction coreAction = null;
         //        CCFiniteTimeAction secondAction = null;
 
-        //        //  Store the positions of the candies to be used to swap them
-        //        CCPoint positionA = new CCPoint(swap.candyA.Position);
-        //        CCPoint positionB = new CCPoint(swap.candyB.Position);
+        //        //  Store the positions of the materials to be used to swap them
+        //        CCPoint positionA = new CCPoint(swap.materialA.Position);
+        //        CCPoint positionB = new CCPoint(swap.materialB.Position);
 
-        //        //  Animate moving the candies back and forth
+        //        //  Animate moving the materials back and forth
         //        coreAction = new CCMoveTo(timeToTake, positionB);
         //        secondAction = new CCMoveTo(timeToTake, positionA);
-        //        swap.candyA.RunActions(coreAction, secondAction);
+        //        swap.materialA.RunActions(coreAction, secondAction);
         //        coreAction = new CCMoveTo(timeToTake, positionA);
         //        secondAction = new CCMoveTo(timeToTake, positionB);
-        //        swap.candyB.RunActions(coreAction, secondAction);
+        //        swap.materialB.RunActions(coreAction, secondAction);
 
         //        //  Wait for the animation to complete before moving on
         //        await Task.Delay(300);

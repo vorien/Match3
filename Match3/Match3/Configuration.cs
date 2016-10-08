@@ -13,14 +13,14 @@ namespace Match3
         public const int gridColumns = 9;
         public const int gridWidthSpacing = 10;
         public const int gridVerticalOffset = 120;
-        public static List<Tuple<string, string>> candyTypes = new CandyTypes();
+        public static List<Tuple<string, string>> materialTypes = new MaterialTypes();
         public static Dictionary<int, Chain> chains = new Dictionary<int, Chain>();
     }
 
-    class CandyTypes : List<Tuple<string, string>>
+    class MaterialTypes : List<Tuple<string, string>>
     {
 
-        public CandyTypes()
+        public MaterialTypes()
         {
             // Parametres are Filename, Display Name
             this.Add(Tuple.Create("PeppermintSwirl", "Peppermint Swirl"));

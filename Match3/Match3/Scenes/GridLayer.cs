@@ -14,7 +14,7 @@ namespace Match3.Scenes
     {
         public GridLayer(LevelLayer levelLayer)
         {
-            ActiveLevel.grid = new Candy[Configuration.gridRows, Configuration.gridColumns];
+            ActiveLevel.grid = new Material[Configuration.gridRows, Configuration.gridColumns];
 
 
             //string parentString = "Still Testing";
@@ -34,7 +34,7 @@ namespace Match3.Scenes
 
         }
 
-        //  Adds the candies to the layer and positions them on screen
+        //  Adds the materials to the layer and positions them on screen
         //  based on their position in the grid
         private void DisplayGrid()
         {

@@ -34,12 +34,12 @@ namespace Match3.Entities
 
         //public Chain()
         //{
-        //    candies = new List<Candy>();
+        //    materials = new List<Material>();
         //}
 
-        //public void addCandy(Candy candy)
+        //public void addMaterial(Material material)
         //{
-        //    candies.Add(candy);
+        //    materials.Add(material);
         //}
     }
 }

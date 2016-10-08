@@ -25,7 +25,7 @@ namespace Match3.Functions
 
         private static Swap swap;
 
-        //  Fills the grid up with new candies
+        //  Fills the grid up with new materials
         public static void FillGrid()
         {
             for (int gRow = 0; gRow < Configuration.gridRows; gRow++)
@@ -34,7 +34,7 @@ namespace Match3.Functions
                 {
                     if (ActiveLevel.level.tiles[gColumn, gRow] == 1)
                     {
-                        AssignCandy(gColumn, gRow); // assigns a new candy the location [gRow,gColumn] in the grid
+                        AssignMaterial(gColumn, gRow); // assigns a new material the location [gRow,gColumn] in the grid
                     }
                 }
             }
@@ -42,19 +42,19 @@ namespace Match3.Functions
 
         // Generates a random for each grid location [column, row] until it doesn't create a chain,
         // then adds it to the grid.
-        public static void AssignCandy(int column, int row)
+        public static void AssignMaterial(int column, int row)
         {
-            Candy newCandy;
+            Material newMaterial;
             do
             {
-                newCandy = new Candy(column, row);
+                newMaterial = new Material(column, row);
             }
             while
             (
-                newCandy.IsPartOfChain()
+                newMaterial.IsPartOfChain()
             );
 
-            ActiveLevel.grid[column, row] = newCandy;
+            ActiveLevel.grid[column, row] = newMaterial;
         }
 
         public static void InitializeGrid()
@@ -67,7 +67,7 @@ namespace Match3.Functions
                 possibleSwapCount = 1;
             }
             while (possibleSwapCount == 0);
-            //  Add the candies to the layer to be displayed to the screen
+            //  Add the materials to the layer to be displayed to the screen
             //addCandies();
         }
 
@@ -84,15 +84,15 @@ namespace Match3.Functions
         //    //AddChild(shuffleLayer);
 
         //    await Task.Delay(500);
-        //    //  Remove all of the old candies from the screen
+        //    //  Remove all of the old materials from the screen
         //    for (int gRow = 0; gRow < Configuration.gridRows; gRow++)
         //    {
         //        for (int gColumn = 0; gColumn < Configuration.gridColumns; gColumn++)
         //        {
         //            if (ActiveLevel.level.tiles[gColumn, gRow] == 1)
         //            {
-        //                Candy candy = GetCandyAt(gColumn, gRow);
-        //                candy.RemoveFromParent();
+        //                Material material = GetMaterialAt(gColumn, gRow);
+        //                material.RemoveFromParent();
         //            }
         //        }
         //    }
@@ -105,8 +105,8 @@ namespace Match3.Functions
 
 
 
-        //  gets the candy that's at the given [column, row] position in the grid
-        public static Candy GetCandyAt(int column, int row)
+        //  gets the material that's at the given [column, row] position in the grid
+        public static Material GetMaterialAt(int column, int row)
         {
             if (
                 column < 0 || column > Configuration.gridColumns
@@ -118,35 +118,35 @@ namespace Match3.Functions
             }
             return ActiveLevel.grid[column, row];
         }
-        public static Candy GetCandyAtGridLocation(CCPointI gridLocation)
+        public static Material GetMaterialAtGridLocation(CCPointI gridLocation)
         {
-            return GetCandyAt(gridLocation.X, gridLocation.Y);
+            return GetMaterialAt(gridLocation.X, gridLocation.Y);
         }
-        public static Candy GetCandyAtOffset(Candy fromCandy, CCPointI toCandyOffset)
+        public static Material GetMaterialAtOffset(Material fromMaterial, CCPointI toMaterialOffset)
         {
-            return GetCandyAtGridLocation(fromCandy.gridLocation + toCandyOffset);
+            return GetMaterialAtGridLocation(fromMaterial.gridLocation + toMaterialOffset);
         }
-        public static Candy GetCandyAtOffset(Candy fromCandy, int offsetX, int offsetY)
+        public static Material GetMaterialAtOffset(Material fromMaterial, int offsetX, int offsetY)
         {
-            return GetCandyAtOffset(fromCandy, fromCandy.gridLocation + new CCPointI(offsetX, offsetY));
+            return GetMaterialAtOffset(fromMaterial, fromMaterial.gridLocation + new CCPointI(offsetX, offsetY));
         }
 
-        public static void TrySwap(Candy fromCandy, CCPointI toCandyOffset)
+        public static void TrySwap(Material fromMaterial, CCPointI toMaterialOffset)
         {
-            Candy toCandy = GetCandyAtOffset(fromCandy, toCandyOffset);
-            if (toCandy == null)
+            Material toMaterial = GetMaterialAtOffset(fromMaterial, toMaterialOffset);
+            if (toMaterial == null)
             {
                 return;
             }
 
-            toCandy.debugLabel.Text = "SWAPTO";
-            //debugLabel.Text = "Switching candy at [" + fromRow + ", " + fromCol + "] with candy at [" + toRow + ", " + toCol + "].";
+            toMaterial.debugLabel.Text = "SWAPTO";
+            //debugLabel.Text = "Switching material at [" + fromRow + ", " + fromCol + "] with material at [" + toRow + ", " + toCol + "].";
 
-            swap = new Swap(fromCandy, toCandy);
+            swap = new Swap(fromMaterial, toMaterial);
             swap.AnimateSwap();
 
-            //After swap, call on all candies
-            Candy checkCandy;
+            //After swap, call on all materials
+            Material checkMaterial;
             Configuration.chains.Clear();
             for (int gRow = 0; gRow < Configuration.gridRows; gRow++)
             {
@@ -154,9 +154,9 @@ namespace Match3.Functions
                 {
                     if (ActiveLevel.level.tiles[gColumn, gRow] == 1)
                     {
-                        checkCandy = GetCandyAt(gColumn, gRow);
-                        checkCandy.CheckForChains();
-                        AssignCandy(gColumn, gRow); // assigns a new candy the location [gRow,gColumn] in the grid
+                        checkMaterial = GetMaterialAt(gColumn, gRow);
+                        checkMaterial.CheckForChains();
+                        AssignMaterial(gColumn, gRow); // assigns a new material the location [gRow,gColumn] in the grid
                     }
                 }
             }
@@ -174,7 +174,7 @@ namespace Match3.Functions
             //        AnimateSwap(swap);
 
             //        await Task.Delay(300);  // Wait for the swap animation to finish before continuing
-            //        dropped = false;    // Sets dropped to false, it will be used to check if the game finished dropping all of the candies
+            //        dropped = false;    // Sets dropped to false, it will be used to check if the game finished dropping all of the materials
             //        filledAgain = false;
             //        finishedRemoving = false;
             //        do
@@ -190,7 +190,7 @@ namespace Match3.Functions
             //            {
             //                await Task.Delay(50);
             //            }
-            //            DropCandies();          // Move the candies down
+            //            DropCandies();          // Move the materials down
             //            while (!dropped)        // As long as the dropCandies method isn't finished it will keep adding an await
             //            {
             //                await Task.Delay(50);
@@ -206,7 +206,7 @@ namespace Match3.Functions
             //        while (deleteChains.Count != 0);
             //        decrementMoves();
 
-            //        // In the case that grid ends up with no possible swaps, we need to refill the grid new candies
+            //        // In the case that grid ends up with no possible swaps, we need to refill the grid new materials
             //        //if (possibleSwaps.Count == 0 && movesLeft != 0)
             //        //{
             //        //    ReInitializeGrid();
@@ -218,8 +218,8 @@ namespace Match3.Functions
             //    }
             //    else
             //    {
-            //        //  failedSwapAnimation only needs to run if there's valid candies
-            //        if (swap.candyA != null && swap.candyB != null)
+            //        //  failedSwapAnimation only needs to run if there's valid materials
+            //        if (swap.materialA != null && swap.materialB != null)
             //        {
             //            //  Swap is not possible so run the failed swap animation
             //            FaildSwapAnimation(swap);
@@ -251,65 +251,65 @@ namespace Match3.Functions
         //        //    {
         //        //        for (int column = 0; column < Configuration.gridColumns; column++)
         //        //        {
-        //        //            //  Grab the candy from grid
-        //        //            Candy checkCandy = ActiveLevel.grid[column, row];
+        //        //            //  Grab the material from grid
+        //        //            Material checkMaterial = ActiveLevel.grid[column, row];
 
-        //        //            //  Make sure that there's a candy at the given grid location
-        //        //            if (checkCandy != null)
+        //        //            //  Make sure that there's a material at the given grid location
+        //        //            if (checkMaterial != null)
         //        //            {
         //        //                //  See if it's possible to swap to the right
         //        //                if (column < Configuration.gridColumns - 1)
         //        //                {
-        //        //                    //  Grab the candy to the right from the checkCandy
-        //        //                    Candy otherCandy = ActiveLevel.grid[column, row + 1];
-        //        //                    if (otherCandy != null)
+        //        //                    //  Grab the material to the right from the checkMaterial
+        //        //                    Material otherMaterial = ActiveLevel.grid[column, row + 1];
+        //        //                    if (otherMaterial != null)
         //        //                    {
-        //        //                        //  Swap the candies
-        //        //                        ActiveLevel.grid[column, row] = otherCandy;
-        //        //                        ActiveLevel.grid[column, row + 1] = checkCandy;
+        //        //                        //  Swap the materials
+        //        //                        ActiveLevel.grid[column, row] = otherMaterial;
+        //        //                        ActiveLevel.grid[column, row + 1] = checkMaterial;
 
-        //        //                        //  Check to see if either one of the swapped candies is now part of a chain
+        //        //                        //  Check to see if either one of the swapped materials is now part of a chain
         //        //                        if (HasChainAt(column, row + 1) || HasChainAt(column, row))
         //        //                        {
         //        //                            Swap swap = new Swap();
-        //        //                            swap.candyA = checkCandy;
-        //        //                            swap.candyB = otherCandy;
+        //        //                            swap.materialA = checkMaterial;
+        //        //                            swap.materialB = otherMaterial;
 
-        //        //                            //  Add the candies to the array of possibleSwaps
+        //        //                            //  Add the materials to the array of possibleSwaps
         //        //                            possibleSwaps.Add(swap);
         //        //                        }
 
-        //        //                        //  Swap the candies back to their original positions
-        //        //                        ActiveLevel.grid[column, row] = checkCandy;
-        //        //                        ActiveLevel.grid[column, row + 1] = otherCandy;
+        //        //                        //  Swap the materials back to their original positions
+        //        //                        ActiveLevel.grid[column, row] = checkMaterial;
+        //        //                        ActiveLevel.grid[column, row + 1] = otherMaterial;
         //        //                    }
         //        //                }
 
         //        //                //  See if it's possible to swap below
         //        //                if (row < Configuration.gridRows - 1)
         //        //                {
-        //        //                    //  Grab the candy to the right from the checkCandy
-        //        //                    Candy otherCandy = ActiveLevel.grid[row + 1, column];
-        //        //                    if (otherCandy != null)
+        //        //                    //  Grab the material to the right from the checkMaterial
+        //        //                    Material otherMaterial = ActiveLevel.grid[row + 1, column];
+        //        //                    if (otherMaterial != null)
         //        //                    {
-        //        //                        //  Swap the candies
-        //        //                        ActiveLevel.grid[column, row] = otherCandy;
-        //        //                        ActiveLevel.grid[row + 1, column] = checkCandy;
+        //        //                        //  Swap the materials
+        //        //                        ActiveLevel.grid[column, row] = otherMaterial;
+        //        //                        ActiveLevel.grid[row + 1, column] = checkMaterial;
 
-        //        //                        //  Check to see if either one of the swapped candies is now part of a chain
+        //        //                        //  Check to see if either one of the swapped materials is now part of a chain
         //        //                        if (HasChainAt(row + 1, column) || HasChainAt(column, row))
         //        //                        {
         //        //                            Swap swap = new Swap();
-        //        //                            swap.candyA = checkCandy;
-        //        //                            swap.candyB = otherCandy;
+        //        //                            swap.materialA = checkMaterial;
+        //        //                            swap.materialB = otherMaterial;
 
-        //        //                            //  Add the candies to the array of possibleSwaps
+        //        //                            //  Add the materials to the array of possibleSwaps
         //        //                            possibleSwaps.Add(swap);
         //        //                        }
 
-        //        //                        //  Swap the candies back to their original positions
-        //        //                        ActiveLevel.grid[column, row] = checkCandy;
-        //        //                        ActiveLevel.grid[row + 1, column] = otherCandy;
+        //        //                        //  Swap the materials back to their original positions
+        //        //                        ActiveLevel.grid[column, row] = checkMaterial;
+        //        //                        ActiveLevel.grid[row + 1, column] = otherMaterial;
         //        //                    }
         //        //                }
         //        //            }
@@ -322,7 +322,7 @@ namespace Match3.Functions
         //    {
         //        foreach (var item in possibleSwaps)
         //        {
-        //            if ((item.candyA == swap.candyA && item.candyB == swap.candyB) || (item.candyA == swap.candyB && item.candyB == swap.candyA))
+        //            if ((item.materialA == swap.materialA && item.materialB == swap.materialB) || (item.materialA == swap.materialB && item.materialB == swap.materialA))
         //            {
         //                return true;
         //            }
@@ -331,7 +331,7 @@ namespace Match3.Functions
         //    }
 
         //    //  Check to see if the touch location is within the grid and if it is
-        //    //  then returns true and the row and column position of the candy
+        //    //  then returns true and the row and column position of the material
         //    public static bool ConvertToPoint(CCPoint location, ref int row, ref int column)
         //    {
         //        if (location.X >= 38 && location.X < 598 && location.Y >= 216 && location.Y < 846)
@@ -339,8 +339,8 @@ namespace Match3.Functions
         //            //debugLabel.Text = "Touch was within the grid.";
         //            row = ConvertYToRow(location.Y);   //(846 - Convert.ToInt32(location.Y)) / 70;
         //            column = ConvertXToColumn(location.X);    //(Convert.ToInt32(location.X) - 38) / 62;
-        //            Candy debugCandy = GetCandyAt(column, row);
-        //            //debugLabel.Text = "Touched the candy at [" + debugCandy.getRow() + ", " + debugCandy.getColumn() + "]";
+        //            Material debugMaterial = GetMaterialAt(column, row);
+        //            //debugLabel.Text = "Touched the material at [" + debugMaterial.getRow() + ", " + debugMaterial.getColumn() + "]";
         //            return true;
         //        }
         //        else
@@ -349,9 +349,9 @@ namespace Match3.Functions
         //        }
         //    }
 
-        //    public static bool HasCandy(CCPointI gridLocation)
+        //    public static bool HasMaterial(CCPointI gridLocation)
         //    {
-        //        //  Make sure that the user didn't swipe out of the grid as there isn't any candies to swap with out there
+        //        //  Make sure that the user didn't swipe out of the grid as there isn't any materials to swap with out there
         //        if (gridLocation.X < 0 || gridLocation.X >= Configuration.gridColumns)
         //        {
         //            return false;
@@ -383,8 +383,8 @@ namespace Match3.Functions
         //        List<Chain> horizontalChains = DetectHorizontalMatches();
         //        List<Chain> verticalChains = DetectVerticalMatches();
 
-        //        // Logic to remove the candies from the grid goes here, possibly call a method that takes the list of chains to work with
-        //        // Don't forget that candies have to be removed from the grid and then afterwards the sprites need to be removed from the screen separately
+        //        // Logic to remove the materials from the grid goes here, possibly call a method that takes the list of chains to work with
+        //        // Don't forget that materials have to be removed from the grid and then afterwards the sprites need to be removed from the screen separately
         //        // which can be handle by another method
         //        foreach (Chain item in verticalChains)
         //        {
@@ -394,7 +394,7 @@ namespace Match3.Functions
         //        RemoveCandies(horizontalChains);
         //    }
 
-        //    //  Remove the candy objects from the screen and the grid
+        //    //  Remove the material objects from the screen and the grid
         //    private static async void RemoveCandies(List<Chain> chains)
         //    {
         //        if (finishedRemoving != false)
@@ -404,12 +404,12 @@ namespace Match3.Functions
 
         //        foreach (Chain chain in chains)
         //        {
-        //            foreach (Candy candy in chain.candies)
+        //            foreach (Material material in chain.materials)
         //            {
-        //                //  Remove the candy from the grid
-        //                ActiveLevel.grid[candy.GetCandyRow(), candy.GetCandyColumn()] = null;
-        //                CCSprite removeCandy = candy.GetCandySprite();
-        //                if (removeCandy != null)
+        //                //  Remove the material from the grid
+        //                ActiveLevel.grid[material.GetMaterialRow(), material.GetMaterialColumn()] = null;
+        //                CCSprite removeMaterial = material.GetMaterialSprite();
+        //                if (removeMaterial != null)
         //                {
         //                    const float timeToTake = 0.3f; // in seconds
         //                    CCFiniteTimeAction coreAction = null;
@@ -417,20 +417,20 @@ namespace Match3.Functions
 
         //                    coreAction = new CCScaleTo(timeToTake, 0.3f);
         //                    easing = new CCEaseOut(coreAction, 0.1f);
-        //                    removeCandy.RunAction(coreAction);
+        //                    removeMaterial.RunAction(coreAction);
 
-        //                    await Task.Delay(50);   // Wait for the scaling animation to show a bit before continuing on to remove the candy
+        //                    await Task.Delay(50);   // Wait for the scaling animation to show a bit before continuing on to remove the material
         //                    //pointGone = false;
-        //                    //pointLabel(candy.getRow(), candy.getColumn());
+        //                    //pointLabel(material.getRow(), material.getColumn());
         //                    //while (!pointGone)
         //                    //{
         //                    //    await Task.Delay(1);
         //                    //}
-        //                    removeCandy.RemoveFromParent(); // This should remove the candy from the screen
+        //                    removeMaterial.RemoveFromParent(); // This should remove the material from the screen
         //                    HandlePoints();
         //                }
         //            }
-        //            //  Wait for all of the candies to be removed before moving on to the next chain in the list of chains
+        //            //  Wait for all of the materials to be removed before moving on to the next chain in the list of chains
         //            await Task.Delay(300);
         //        }
         //        //  Since the method is finished removing all of chains, needed to set the finishedRemoving bool variable to true
@@ -438,7 +438,7 @@ namespace Match3.Functions
         //        finishedRemoving = true;
         //    }
 
-        //    //  Adds a label that shows "+10" for every candy that is destroyed, it then proceeds towards that scoreLabel, implying that it gets added to the score.
+        //    //  Adds a label that shows "+10" for every material that is destroyed, it then proceeds towards that scoreLabel, implying that it gets added to the score.
         //    private static async void PointLabel(int row, int column)
         //    {
         //        var point = new CCLabel("+10", "Arial", 50, CCLabelFormat.SystemFont);
@@ -452,7 +452,7 @@ namespace Match3.Functions
         //        //pointGone = true;
         //    }
 
-        //    //  Drops the candies down 
+        //    //  Drops the materials down 
         //    //private static async void DropCandies()
         //    //{
         //    //    // Makes sure that dropped bool variable is set false before continuing
@@ -466,25 +466,25 @@ namespace Match3.Functions
         //    //        {
         //    //            if (ActiveLevel.level.tiles[column, row] == 1)
         //    //            {
-        //    //                Candy candy = GetCandyAt(column, row);
-        //    //                if (candy == null)
+        //    //                Material material = GetMaterialAt(column, row);
+        //    //                if (material == null)
         //    //                {
-        //    //                    // Find which row number to drop the candy from
+        //    //                    // Find which row number to drop the material from
         //    //                    int tempRow = row - 1;
         //    //                    while (tempRow >= 0 && ActiveLevel.grid[tempcolumn, row] == null)
         //    //                    {
         //    //                        tempRow--;
         //    //                    }
-        //    //                    //  Only runs if there's a row that has a candy in it
+        //    //                    //  Only runs if there's a row that has a material in it
         //    //                    if (tempRow >= 0)
         //    //                    {
         //    //                        CCPoint position = new CCPoint(70 + (62 * column), 810 - (70 * row));
-        //    //                        candy = GetCandyAt(tempcolumn, row);
-        //    //                        candy.AddAction(new CCEaseOut(new CCMoveTo(0.3f, position), 0.3f));
-        //    //                        candy.SetCandyPosition(column, row);    // Update the row and column of the candy
-        //    //                        ActiveLevel.grid[column, row] = candy;             // Update the position of the candy within the grid
+        //    //                        material = GetMaterialAt(tempcolumn, row);
+        //    //                        material.AddAction(new CCEaseOut(new CCMoveTo(0.3f, position), 0.3f));
+        //    //                        material.SetMaterialPosition(column, row);    // Update the row and column of the material
+        //    //                        ActiveLevel.grid[column, row] = material;             // Update the position of the material within the grid
         //    //                        ActiveLevel.grid[tempcolumn, row] = null;
-        //    //                        //  Wait for the candy to drop before moving to on the next candy
+        //    //                        //  Wait for the material to drop before moving to on the next material
         //    //                        await Task.Delay(50);
         //    //                    }
         //    //                }
@@ -492,7 +492,7 @@ namespace Match3.Functions
         //    //        }
         //    //    }
 
-        //    //    // Since the method should have gone through the entire grid and finished dropping the candies
+        //    //    // Since the method should have gone through the entire grid and finished dropping the materials
         //    //    // need to set dropped to true so the calling method can get out of the await loop
         //    //    dropped = true;
         //    //}
@@ -500,39 +500,39 @@ namespace Match3.Functions
         //    //  Fill the holes at the top of the of each column
         //    private static void FillColumns()
         //    {
-        //        int candyType = 0;
+        //        int materialType = 0;
         //        if (filledAgain != false)
         //        {
         //            filledAgain = false;
         //        }
         //        for (int column = 0; column < Configuration.gridColumns; column++)
         //        {
-        //            //  Starting at the top and working downwards, add a new candy where it's needed
+        //            //  Starting at the top and working downwards, add a new material where it's needed
         //            for (int row = 0; row < Configuration.gridRows && ActiveLevel.grid[column, row] == null; row++)
         //            {
         //                if (ActiveLevel.level.tiles[column, row] == 1)
         //                {
-        //                    int newCandyType = 0;
-        //                    //  Have to first create a new candy outside of the while loop or otherwise the IDE won't let me use the variable newCandy
-        //                    //  as it will be seen as using an unassigned variable, even though it will be assigned a new candy in the while loop
-        //                    Candy newCandy = new Candy(column, row);
-        //                    newCandyType = newCandy.GetCandyTypeID();
-        //                    //  Make sure that each candy that is being added isn't the same as the one that was added previously
-        //                    while (newCandyType == candyType)
+        //                    int newMaterialType = 0;
+        //                    //  Have to first create a new material outside of the while loop or otherwise the IDE won't let me use the variable newMaterial
+        //                    //  as it will be seen as using an unassigned variable, even though it will be assigned a new material in the while loop
+        //                    Material newMaterial = new Material(column, row);
+        //                    newMaterialType = newMaterial.GetMaterialTypeID();
+        //                    //  Make sure that each material that is being added isn't the same as the one that was added previously
+        //                    while (newMaterialType == materialType)
         //                    {
-        //                        newCandy = new Candy(column, row);
-        //                        newCandyType = newCandy.GetCandyTypeID();
+        //                        newMaterial = new Material(column, row);
+        //                        newMaterialType = newMaterial.GetMaterialTypeID();
         //                    }
-        //                    candyType = newCandyType;
-        //                    ActiveLevel.grid[column, row] = newCandy;
+        //                    materialType = newMaterialType;
+        //                    ActiveLevel.grid[column, row] = newMaterial;
 
-        //                    // Once all of the candy is created to fill the grid back up
+        //                    // Once all of the material is created to fill the grid back up
         //                    // Use an animation to add it to the screen
         //                    AnimateAddingNewCandies(column, row);
         //                }
         //            }
         //        }
-        //        //  Since the entire grid was filled back up with candies, need to set the filledAgain bool variable to true
+        //        //  Since the entire grid was filled back up with materials, need to set the filledAgain bool variable to true
         //        //  so the calling method can get out the await loop
         //        filledAgain = true;
         //    }
@@ -556,7 +556,7 @@ namespace Match3.Functions
         //        //scoreLabel.Text = Convert.ToString(points);
         //    }
 
-        //    //  Using an animation to add all of the new candies to screen
+        //    //  Using an animation to add all of the new materials to screen
         //    private static async void AnimateAddingNewCandies(int row, int column)
         //    {
         //        //  Find the top most tile for the column
@@ -565,13 +565,13 @@ namespace Match3.Functions
         //        {
         //            topMostRowLocation++;
         //        }
-        //        // Starting position for the candy to be added
+        //        // Starting position for the material to be added
         //        CCPoint beginningPosition = new CCPoint(70 + (62 * column), 810 - (70 * topMostRowLocation) + 50);
-        //        // The final position of where the candy goes
+        //        // The final position of where the material goes
         //        CCPoint endPosition = new CCPoint(70 + (62 * column), 810 - (70 * row));
         //        ActiveLevel.grid[column, row].Position = beginningPosition;
-        //        //AddChild(ActiveLevel.grid[column, row]);   // Add the candy to the screen
-        //        // Animation to move the candy into it's proper position
+        //        //AddChild(ActiveLevel.grid[column, row]);   // Add the material to the screen
+        //        // Animation to move the material into it's proper position
         //        ActiveLevel.grid[column, row].AddAction(new CCMoveTo(0.3f, endPosition));
         //        // Wait for the animation before continuing
         //        await Task.Delay(300);
@@ -588,21 +588,21 @@ namespace Match3.Functions
         //                //  Makes sure that location in the grid isn't empty
         //                if (ActiveLevel.grid[column, row] != null)
         //                {
-        //                    int matchType = ActiveLevel.grid[column, row].GetCandyTypeID();
-        //                    //  If the next two candies match than there's a chain here
+        //                    int matchType = ActiveLevel.grid[column, row].GetMaterialTypeID();
+        //                    //  If the next two materials match than there's a chain here
         //                    if ((ActiveLevel.grid[column, row + 1] != null && ActiveLevel.grid[column, row + 2] != null)
-        //                        && ActiveLevel.grid[column, row + 1].GetCandyTypeID() == matchType && ActiveLevel.grid[column, row + 2].GetCandyTypeID() == matchType)
+        //                        && ActiveLevel.grid[column, row + 1].GetMaterialTypeID() == matchType && ActiveLevel.grid[column, row + 2].GetMaterialTypeID() == matchType)
         //                    {
         //                        //  Create a new chain
         //                        var chain = new Chain();
         //                        chain.chainType = Chain.ChainType.Horizontal;
-        //                        //  Add all of the candies within the chain to chain variable
+        //                        //  Add all of the materials within the chain to chain variable
         //                        do
         //                        {
-        //                            chain.addCandy(GetCandyAt(column, row));
+        //                            chain.addMaterial(GetMaterialAt(column, row));
         //                            column += 1;
         //                        }
-        //                        while ((column < Configuration.gridColumns && ActiveLevel.grid[column, row] != null) && ActiveLevel.grid[column, row].GetCandyTypeID() == matchType);
+        //                        while ((column < Configuration.gridColumns && ActiveLevel.grid[column, row] != null) && ActiveLevel.grid[column, row].GetMaterialTypeID() == matchType);
         //                        horzList.Add(chain);    // Add the chain to the list of horizontal chains
         //                    }
         //                }
@@ -623,21 +623,21 @@ namespace Match3.Functions
         //                //  Makes sure that the location in the grid isn't empty
         //                if (ActiveLevel.grid[column, row] != null)
         //                {
-        //                    int matchType = ActiveLevel.grid[column, row].GetCandyTypeID();
-        //                    //  If the two candies below it matches, then there's a chain
+        //                    int matchType = ActiveLevel.grid[column, row].GetMaterialTypeID();
+        //                    //  If the two materials below it matches, then there's a chain
         //                    if ((ActiveLevel.grid[row + 1, column] != null && ActiveLevel.grid[row + 2, column] != null)
-        //                        && ActiveLevel.grid[row + 1, column].GetCandyTypeID() == matchType && ActiveLevel.grid[row + 2, column].GetCandyTypeID() == matchType)
+        //                        && ActiveLevel.grid[row + 1, column].GetMaterialTypeID() == matchType && ActiveLevel.grid[row + 2, column].GetMaterialTypeID() == matchType)
         //                    {
         //                        //  Create a new chain
         //                        var chain = new Chain();
         //                        chain.chainType = Chain.ChainType.Vertical;
-        //                        //  Add all of the candies within the chain to the chain variable
+        //                        //  Add all of the materials within the chain to the chain variable
         //                        do
         //                        {
-        //                            chain.addCandy(GetCandyAt(column, row));
+        //                            chain.addMaterial(GetMaterialAt(column, row));
         //                            row += 1;
         //                        }
-        //                        while ((row < Configuration.gridRows && ActiveLevel.grid[column, row] != null) && ActiveLevel.grid[column, row].GetCandyTypeID() == matchType);
+        //                        while ((row < Configuration.gridRows && ActiveLevel.grid[column, row] != null) && ActiveLevel.grid[column, row].GetMaterialTypeID() == matchType);
         //                        vertList.Add(chain);    // Add the chain to the list of vertical chains
         //                    }
         //                }

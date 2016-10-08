@@ -8,16 +8,16 @@ using Match3.Scenes;
 
 namespace Match3.Entities
 {
-    // Class that creates one of several different candies,
-    // it will contain private variables for it's Name, location, and whether or not it's a special candy
-    public class Candy : CCSprite
+    // Class that creates one of several different materials,
+    // it will contain private variables for it's Name, location, and whether or not it's a special material
+    public class Material : CCSprite
     {
         public CCSize spriteSize;
         public int chainGroup;
-        private string candyName;
-        float candyDimensions;
-        public CCSprite candySprite;   // sprite for the candy
-        public int candyTypeID;    // variables to hold the location of the candy in the grid
+        private string materialName;
+        float materialDimensions;
+        public CCSprite materialSprite;   // sprite for the material
+        public int materialTypeID;    // variables to hold the location of the material in the grid
         private CCPoint swipeStart; // Keeps track of where the swipe started from
         private CCPoint swipeMoved; // Keeps track of the current touch location
         public CCPointI gridLocation;
@@ -28,14 +28,14 @@ namespace Match3.Entities
 
         //private LevelLayer levelLayer { get; set; }
         //private GridLayer gridLayer { get; set; }
-        private int candyWNChainGroup, candyESChainGroup;
-        private Candy candyN, candyS, candyE, candyW;
+        private int materialWNChainGroup, materialESChainGroup;
+        private Material materialN, materialS, materialE, materialW;
 
         // default constructor
-        // generates a random candy
-        public Candy(int column, int row)
+        // generates a random material
+        public Material(int column, int row)
         {
-            //  Adding a debug label that will display the candy's row and column numbers, to see if the candy visually match with it's array locations
+            //  Adding a debug label that will display the material's row and column numbers, to see if the material visually match with it's array locations
             //debugLabel = new CCLabel("", "Arial", 40, CCLabelFormat.SystemFont);
             ////debugLabel.Text = "[" + row + ", " + column + "]";
             //debugLabel.Color = CCColor3B.White;
@@ -45,38 +45,38 @@ namespace Match3.Entities
 
             gridLocation = new CCPointI(column, row);
 
-            candyTypeID = SetRandomCandyType();
-            candyName = Configuration.candyTypes[candyTypeID].Item2;
-            string candyFile = Configuration.candyTypes[candyTypeID].Item1;
+            materialTypeID = SetRandomMaterialType();
+            materialName = Configuration.materialTypes[materialTypeID].Item2;
+            string materialFile = Configuration.materialTypes[materialTypeID].Item1;
 
-            candySprite = new CCSprite(candyFile);
+            materialSprite = new CCSprite(materialFile);
 
-            candyDimensions = (ScreenInfo.preferredWidth - (Configuration.gridWidthSpacing * 2)) / Configuration.gridColumns;
-            spriteSize = candySprite.ContentSize = new CCSize(candyDimensions, candyDimensions);
-            candySprite.AnchorPoint = CCPoint.AnchorMiddle;
-            candySprite.Position = new CCPoint((spriteSize.Width * (column + .5f)), spriteSize.Height * (row + .5f)) + new CCPoint(Configuration.gridWidthSpacing, Configuration.gridVerticalOffset);
+            materialDimensions = (ScreenInfo.preferredWidth - (Configuration.gridWidthSpacing * 2)) / Configuration.gridColumns;
+            spriteSize = materialSprite.ContentSize = new CCSize(materialDimensions, materialDimensions);
+            materialSprite.AnchorPoint = CCPoint.AnchorMiddle;
+            materialSprite.Position = new CCPoint((spriteSize.Width * (column + .5f)), spriteSize.Height * (row + .5f)) + new CCPoint(Configuration.gridWidthSpacing, Configuration.gridVerticalOffset);
             ;
 
-            //  Adding a debug label to the candy for testing
+            //  Adding a debug label to the material for testing
             debugLabel = new CCLabel("", "Arial", 30, CCLabelFormat.SystemFont);
             //debugLabel.Text = "[" + row + ", " + column + "]";
             //debugLabel.Text = "?";
-            //debugLabel.Text = "[" + candySprite.BoundingBoxTransformedToWorld.Center.X + ", " + candySprite.BoundingBoxTransformedToWorld.Center.Y + "]";
+            //debugLabel.Text = "[" + materialSprite.BoundingBoxTransformedToWorld.Center.X + ", " + materialSprite.BoundingBoxTransformedToWorld.Center.Y + "]";
             //debugLabel.Text = ThisChainGroup().ToString();
             debugLabel.Color = CCColor3B.Black;
-            debugLabel.PositionX = candySprite.ContentSize.Width / 2.0f;
-            debugLabel.PositionY = candySprite.ContentSize.Height / 2.0f;
+            debugLabel.PositionX = materialSprite.ContentSize.Width / 2.0f;
+            debugLabel.PositionY = materialSprite.ContentSize.Height / 2.0f;
             debugLabel.AnchorPoint = CCPoint.AnchorMiddle;
-            candySprite.AddChild(debugLabel);
+            materialSprite.AddChild(debugLabel);
 
-            //candySprite.AddChild(drawNode, 10);
+            //materialSprite.AddChild(drawNode, 10);
             //drawNode.DrawCircle(
-            //    center: candySprite.AnchorPoint,
-            //    radius: candyDimensions / 2,
+            //    center: materialSprite.AnchorPoint,
+            //    radius: materialDimensions / 2,
             //    color: CCColor4B.Orange);
 
-            AddChild(candySprite);
-            position = candySprite.Position;
+            AddChild(materialSprite);
+            position = materialSprite.Position;
 
         }
 
@@ -91,21 +91,21 @@ namespace Match3.Entities
             touchListener.OnTouchMoved = HandleTouchMoved;
             touchListener.OnTouchEnded = HandleTouchEnded;
             //touchListener.OnTouchCancelled = HandleTouchCancelled;
-            AddEventListener(touchListener, candySprite);
+            AddEventListener(touchListener, materialSprite);
 
         }
 
 
         private bool HandleTouchBegan(CCTouch touch, CCEvent touchEvent)
         {
-            if (candySprite.BoundingBox.ContainsPoint(touch.Location))
+            if (materialSprite.BoundingBox.ContainsPoint(touch.Location))
             {
-                // The user touched this candy";
+                // The user touched this material";
                 swipeStart = touch.Location;
                 //debugLabel.Text = "Touched";
-                //debugLabel.Text = candySprite.BoundingBox.ToString();
+                //debugLabel.Text = materialSprite.BoundingBox.ToString();
                 //debugLabel.Color = CCColor3B.Green;
-                //candySprite.Position = touch.Location;
+                //materialSprite.Position = touch.Location;
                 debugLabel.Text = "[" + position.X + ", " + position.Y + "]";
                 return true;
             }
@@ -138,7 +138,7 @@ namespace Match3.Entities
 
             //debugLabel.Text = swipeDirection.X + " , " + swipeDirection.Y;
             
-            //  Turn off the user interaction as the user should be allowed to move any of candies while candies are swapped, removed, and the grid refilled
+            //  Turn off the user interaction as the user should be allowed to move any of materials while materials are swapped, removed, and the grid refilled
             PauseListeners();
             GridFunctions.TrySwap(this, swipeDirection);
             ResumeListeners();
@@ -150,7 +150,7 @@ namespace Match3.Entities
             HandleTouchEnded(touch, touchEvent);
         }
 
-        //  Check to see if this candy is part of a chain
+        //  Check to see if this material is part of a chain
         public bool IsPartOfChain()
         {
 
@@ -161,8 +161,8 @@ namespace Match3.Entities
 
             for (int ctr = column - 1; ctr > -1; ctr--)
             {
-                Candy checkCandy = ActiveLevel.grid[ctr, row];
-                if (checkCandy != null && checkCandy.candyTypeID == candyTypeID)
+                Material checkMaterial = ActiveLevel.grid[ctr, row];
+                if (checkMaterial != null && checkMaterial.materialTypeID == materialTypeID)
                 {
                     horizontalLength++;
                 }
@@ -173,8 +173,8 @@ namespace Match3.Entities
             }
             for (int ctr = column + 1; ctr < Configuration.gridColumns; ctr++)
             {
-                Candy checkCandy = ActiveLevel.grid[ctr, row];
-                if (checkCandy != null && checkCandy.candyTypeID == candyTypeID)
+                Material checkMaterial = ActiveLevel.grid[ctr, row];
+                if (checkMaterial != null && checkMaterial.materialTypeID == materialTypeID)
                 {
                     horizontalLength++;
                 }
@@ -190,7 +190,7 @@ namespace Match3.Entities
 
             for (int ctr = row - 1; ctr > -1; ctr--)
             {
-                if (ActiveLevel.grid[column, ctr] != null && ActiveLevel.grid[column, ctr].candyTypeID == candyTypeID)
+                if (ActiveLevel.grid[column, ctr] != null && ActiveLevel.grid[column, ctr].materialTypeID == materialTypeID)
                 {
                     verticalLength++;
                 }
@@ -201,7 +201,7 @@ namespace Match3.Entities
             }
             for (int ctr = row + 1; ctr < Configuration.gridColumns; ctr++)
             {
-                if (ActiveLevel.grid[column, ctr] != null && ActiveLevel.grid[column, ctr].candyTypeID == candyTypeID)
+                if (ActiveLevel.grid[column, ctr] != null && ActiveLevel.grid[column, ctr].materialTypeID == materialTypeID)
                 {
                     verticalLength++;
                 }
@@ -217,32 +217,32 @@ namespace Match3.Entities
 
 
 
-        //  Returns what type of candy it is
-        public int GetCandyTypeID()
+        //  Returns what type of material it is
+        public int GetMaterialTypeID()
         {
-            return candyTypeID;
+            return materialTypeID;
         }
 
-        //  points the caller to the location of the candySprite in memory
-        public CCSprite GetCandySprite()
+        //  points the caller to the location of the materialSprite in memory
+        public CCSprite GetMaterialSprite()
         {
-            return candySprite;
+            return materialSprite;
         }
 
-        //  Returns which row the candy is in
-        public int GetCandyRow()
+        //  Returns which row the material is in
+        public int GetMaterialRow()
         {
             return gridLocation.X;
         }
 
-        //  Returns which column the candy is in
-        public int GetCandyColumn()
+        //  Returns which column the material is in
+        public int GetMaterialColumn()
         {
             return gridLocation.Y;
         }
 
-        //  Sets the new grid position of the candy
-        public void SetCandyPosition(int column, int row)
+        //  Sets the new grid position of the material
+        public void SetMaterialPosition(int column, int row)
         {
             gridLocation.X = row;
             gridLocation.Y = column;
@@ -250,18 +250,18 @@ namespace Match3.Entities
 
         // Generate a random number within the range of 1-5
         // 1 -> Red, 2 -> Blue, 3 -> Yellow, 4 -> Purple, 5 -> Green
-        public int SetRandomCandyType()
+        public int SetRandomMaterialType()
         {
-            int randMax = Configuration.candyTypes.Count; // Number of candies in the configuration file
+            int randMax = Configuration.materialTypes.Count; // Number of materials in the configuration file
             return rand.Next(0, randMax); // random list item id
         }
 
         public void CheckForChains()
         {
-            candyN = GridFunctions.GetCandyAtGridLocation(gridLocation + new CCPointI(0, 1));
-            candyS = GridFunctions.GetCandyAtGridLocation(gridLocation + new CCPointI(0, -1));
-            candyE = GridFunctions.GetCandyAtGridLocation(gridLocation + new CCPointI(1, 0));
-            candyW = GridFunctions.GetCandyAtGridLocation(gridLocation + new CCPointI(-1, 0));
+            materialN = GridFunctions.GetMaterialAtGridLocation(gridLocation + new CCPointI(0, 1));
+            materialS = GridFunctions.GetMaterialAtGridLocation(gridLocation + new CCPointI(0, -1));
+            materialE = GridFunctions.GetMaterialAtGridLocation(gridLocation + new CCPointI(1, 0));
+            materialW = GridFunctions.GetMaterialAtGridLocation(gridLocation + new CCPointI(-1, 0));
 
             SetChainGroup("Horizontal");
             SetChainGroup("Vertical");
@@ -271,38 +271,38 @@ namespace Match3.Entities
             switch (direction)
             {
                 case "Horizontal":
-                    if (candyW == null || candyE == null)
+                    if (materialW == null || materialE == null)
                     {
                         return;
                     }
-                    if (candyW.candyTypeID != this.candyTypeID || candyE.candyTypeID != this.candyTypeID)
+                    if (materialW.materialTypeID != this.materialTypeID || materialE.materialTypeID != this.materialTypeID)
                     {
                         return;
                     }
-                    candyWNChainGroup = candyW.chainGroup;
-                    candyESChainGroup = candyE.chainGroup;
+                    materialWNChainGroup = materialW.chainGroup;
+                    materialESChainGroup = materialE.chainGroup;
                     break;
                 case "Vertical":
-                    if (candyN == null || candyS == null)
+                    if (materialN == null || materialS == null)
                     {
                         return;
                     }
-                    if (candyN.candyTypeID != this.candyTypeID || candyS.candyTypeID != this.candyTypeID)
+                    if (materialN.materialTypeID != this.materialTypeID || materialS.materialTypeID != this.materialTypeID)
                     {
                         return;
                     }
-                    candyWNChainGroup = candyN.chainGroup;
-                    candyESChainGroup = candyS.chainGroup;
+                    materialWNChainGroup = materialN.chainGroup;
+                    materialESChainGroup = materialS.chainGroup;
                     break;
                 default:
                     throw new Exception("direction must be Horizontal or Vertical");
                     //break;
             }
 
-            if (candyWNChainGroup == 0 && candyESChainGroup == 0) //neither is part of a chain group
+            if (materialWNChainGroup == 0 && materialESChainGroup == 0) //neither is part of a chain group
             {
                 // New Chain Group
-                chainGroup = candyWNChainGroup = candyESChainGroup = ThisChainGroup();
+                chainGroup = materialWNChainGroup = materialESChainGroup = ThisChainGroup();
                 if (Configuration.chains.ContainsKey(chainGroup))
                 {
                     throw new Exception("Should be a new chain, but already exists in chains dictionary");
@@ -318,9 +318,9 @@ namespace Match3.Entities
             }
             else
             {
-                if (candyWNChainGroup != 0 && candyESChainGroup != 0)
+                if (materialWNChainGroup != 0 && materialESChainGroup != 0)
                 {
-                    if (candyWNChainGroup != candyESChainGroup)
+                    if (materialWNChainGroup != materialESChainGroup)
                     {
                         throw new Exception("Multiple chains should not connect: current chainGroup not set");
                     }
@@ -328,20 +328,20 @@ namespace Match3.Entities
                     {
                         if (chainGroup == 0)
                         {
-                            chainGroup = candyWNChainGroup;
+                            chainGroup = materialWNChainGroup;
                             Configuration.chains[chainGroup].chainCount += 1;
                             Configuration.chains[chainGroup].UpdateChainLengths(direction, 1);
                             //TODO: Check direction vs chainDirection to see if chainType should be X
                         }
                         else
                         {
-                            throw new Exception("Current candy should never have both neighbors set");
+                            throw new Exception("Current material should never have both neighbors set");
                         }
                     }
                 }
                 else
                 {
-                    chainGroup = candyWNChainGroup = candyESChainGroup = Math.Max(candyWNChainGroup, candyESChainGroup);
+                    chainGroup = materialWNChainGroup = materialESChainGroup = Math.Max(materialWNChainGroup, materialESChainGroup);
                     Configuration.chains[chainGroup].chainCount += 2;
                     Configuration.chains[chainGroup].UpdateChainLengths(direction, 2);
                     //TODO: Check direction vs chainDirection to see if chainType should be T
