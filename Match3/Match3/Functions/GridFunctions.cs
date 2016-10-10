@@ -18,12 +18,10 @@ namespace Match3.Functions
 
 
         private static Random rand = new Random();
-        private static List<Swap> possibleSwaps;
+        //private static List<PossibleSwaps> possibleSwaps;
         //private static List<Chain> deleteChains;
         private static int possibleSwapCount = 0;
         private static bool dropped, filledAgain, finishedRemoving, doneShuffling; //, pointGone;
-
-        private static Swap swap;
 
         //  Fills the grid up with new materials
         public static void FillGrid()
@@ -131,37 +129,39 @@ namespace Match3.Functions
             return GetMaterialAtOffset(fromMaterial, fromMaterial.gridLocation + new CCPointI(offsetX, offsetY));
         }
 
-        public static void TrySwap(Material fromMaterial, CCPointI toMaterialOffset)
+        public static void TrySwap(CCPointI fromGridLocation, CCPointI toOffset)
         {
-            Material toMaterial = GetMaterialAtOffset(fromMaterial, toMaterialOffset);
-            if (toMaterial == null)
+            CCPointI toGridLocation = GetMaterialAtGridLocation(fromGridLocation + toOffset).gridLocation;
+            if (GetMaterialAtGridLocation(toGridLocation) == null)
             {
                 return;
             }
 
-            toMaterial.debugLabel.Text = "SWAPTO";
+            //toMaterial.debugLabel.Text = "SWAPTO";
             //debugLabel.Text = "Switching material at [" + fromRow + ", " + fromCol + "] with material at [" + toRow + ", " + toCol + "].";
 
-            swap = new Swap(fromMaterial, toMaterial);
-            swap.AnimateSwap();
+            MaterialSwap.fromGridLocation = fromGridLocation;
+            MaterialSwap.toGridLocation = toGridLocation;
+
+            MaterialSwap.AnimateSwap();
 
             //After swap, call on all materials
-            Material checkMaterial;
-            Configuration.chains.Clear();
-            for (int gRow = 0; gRow < Configuration.gridRows; gRow++)
-            {
-                for (int gColumn = 0; gColumn < Configuration.gridColumns; gColumn++)
-                {
-                    if (ActiveLevel.level.tiles[gColumn, gRow] == 1)
-                    {
-                        checkMaterial = GetMaterialAt(gColumn, gRow);
-                        checkMaterial.CheckForChains();
-                        AssignMaterial(gColumn, gRow); // assigns a new material the location [gRow,gColumn] in the grid
-                    }
-                }
-            }
-            Debug.WriteLine(Configuration.chains.Count.ToString());
-            Debug.WriteLine("");
+            //Material checkMaterial;
+            //Configuration.chains.Clear();
+            //for (int gRow = 0; gRow < Configuration.gridRows; gRow++)
+            //{
+            //    for (int gColumn = 0; gColumn < Configuration.gridColumns; gColumn++)
+            //    {
+            //        if (ActiveLevel.level.tiles[gColumn, gRow] == 1)
+            //        {
+            //            checkMaterial = GetMaterialAt(gColumn, gRow);
+            //            checkMaterial.CheckForChains();
+            //            AssignMaterial(gColumn, gRow); // assigns a new material the location [gRow,gColumn] in the grid
+            //        }
+            //    }
+            //}
+            //Debug.WriteLine(Configuration.chains.Count.ToString());
+            //Debug.WriteLine("");
             //foreach (KeyValuePair<int, Chain> chain in Configuration.chains)
             //{
             //    // do something with entry.Value or entry.Key
@@ -170,7 +170,7 @@ namespace Match3.Functions
 
             //    if (IsSwapPossible(swap))
             //    {
-            //        // Swap them
+            //        // MaterialSwap them
             //        AnimateSwap(swap);
 
             //        await Task.Delay(300);  // Wait for the swap animation to finish before continuing
@@ -221,7 +221,7 @@ namespace Match3.Functions
             //        //  failedSwapAnimation only needs to run if there's valid materials
             //        if (swap.materialA != null && swap.materialB != null)
             //        {
-            //            //  Swap is not possible so run the failed swap animation
+            //            //  MaterialSwap is not possible so run the failed swap animation
             //            FaildSwapAnimation(swap);
             //            //  Waiting to make sure the animation has been completed
             //            await Task.Delay(300);
@@ -245,7 +245,7 @@ namespace Match3.Functions
         //    //  Will return the number of possible swaps that were detected in the grid
         //    private static void DetectPossibleSwaps()
         //    {
-        //        //    possibleSwaps = new List<Swap>();
+        //        //    possibleSwaps = new List<MaterialSwap>();
         //        //    // for loop to go through the grid to find possible swaps
         //        //    for (int row = 0; row < Configuration.gridRows; row++)
         //        //    {
@@ -264,14 +264,14 @@ namespace Match3.Functions
         //        //                    Material otherMaterial = ActiveLevel.grid[column, row + 1];
         //        //                    if (otherMaterial != null)
         //        //                    {
-        //        //                        //  Swap the materials
+        //        //                        //  MaterialSwap the materials
         //        //                        ActiveLevel.grid[column, row] = otherMaterial;
         //        //                        ActiveLevel.grid[column, row + 1] = checkMaterial;
 
         //        //                        //  Check to see if either one of the swapped materials is now part of a chain
         //        //                        if (HasChainAt(column, row + 1) || HasChainAt(column, row))
         //        //                        {
-        //        //                            Swap swap = new Swap();
+        //        //                            MaterialSwap swap = new MaterialSwap();
         //        //                            swap.materialA = checkMaterial;
         //        //                            swap.materialB = otherMaterial;
 
@@ -279,7 +279,7 @@ namespace Match3.Functions
         //        //                            possibleSwaps.Add(swap);
         //        //                        }
 
-        //        //                        //  Swap the materials back to their original positions
+        //        //                        //  MaterialSwap the materials back to their original positions
         //        //                        ActiveLevel.grid[column, row] = checkMaterial;
         //        //                        ActiveLevel.grid[column, row + 1] = otherMaterial;
         //        //                    }
@@ -292,14 +292,14 @@ namespace Match3.Functions
         //        //                    Material otherMaterial = ActiveLevel.grid[row + 1, column];
         //        //                    if (otherMaterial != null)
         //        //                    {
-        //        //                        //  Swap the materials
+        //        //                        //  MaterialSwap the materials
         //        //                        ActiveLevel.grid[column, row] = otherMaterial;
         //        //                        ActiveLevel.grid[row + 1, column] = checkMaterial;
 
         //        //                        //  Check to see if either one of the swapped materials is now part of a chain
         //        //                        if (HasChainAt(row + 1, column) || HasChainAt(column, row))
         //        //                        {
-        //        //                            Swap swap = new Swap();
+        //        //                            MaterialSwap swap = new MaterialSwap();
         //        //                            swap.materialA = checkMaterial;
         //        //                            swap.materialB = otherMaterial;
 
@@ -307,7 +307,7 @@ namespace Match3.Functions
         //        //                            possibleSwaps.Add(swap);
         //        //                        }
 
-        //        //                        //  Swap the materials back to their original positions
+        //        //                        //  MaterialSwap the materials back to their original positions
         //        //                        ActiveLevel.grid[column, row] = checkMaterial;
         //        //                        ActiveLevel.grid[row + 1, column] = otherMaterial;
         //        //                    }
@@ -318,7 +318,7 @@ namespace Match3.Functions
         //    }
 
         ////  Check to see if a swap is possible
-        //private static bool IsSwapPossible(Swap swap)
+        //private static bool IsSwapPossible(MaterialSwap swap)
         //    {
         //        foreach (var item in possibleSwaps)
         //        {

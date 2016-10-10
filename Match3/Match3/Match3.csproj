@@ -61,7 +61,7 @@
     <Compile Include="Scenes\GameOverScene.cs" />
     <Compile Include="Scenes\StartScene.cs" />
     <Compile Include="Scenes\LevelScene.cs" />
-    <Compile Include="Entities\Swap.cs" />
+    <Compile Include="Entities\MaterialSwap.cs" />
     <Compile Include="Scenes\TargetLayer.cs" />
     <Compile Include="Scenes\TestLayer.cs" />
   </ItemGroup>

@@ -13,11 +13,12 @@ namespace Match3.Entities
     public class Material : CCSprite
     {
         public CCSize spriteSize;
+        public CCSize nodeSize;
         public int chainGroup;
         private string materialName;
         float materialDimensions;
-        public CCSprite materialSprite;   // sprite for the material
-        public int materialTypeID;    // variables to hold the location of the material in the grid
+        private CCTexture2D texture;   // image for the material
+        public int materialTypeID;    // Configuration.MaterialTypes key for the material image
         private CCPoint swipeStart; // Keeps track of where the swipe started from
         private CCPoint swipeMoved; // Keeps track of the current touch location
         public CCPointI gridLocation;
@@ -35,6 +36,11 @@ namespace Match3.Entities
         // generates a random material
         public Material(int column, int row)
         {
+            materialTypeID = SetRandomMaterialType();
+            materialName = Configuration.materialTypes[materialTypeID].Item2;
+            string materialFile = Configuration.materialTypes[materialTypeID].Item1;
+            this.Texture = texture = new CCTexture2D(materialFile);
+
             //  Adding a debug label that will display the material's row and column numbers, to see if the material visually match with it's array locations
             //debugLabel = new CCLabel("", "Arial", 40, CCLabelFormat.SystemFont);
             ////debugLabel.Text = "[" + row + ", " + column + "]";
@@ -44,17 +50,15 @@ namespace Match3.Entities
             //AddChild(debugLabel);
 
             gridLocation = new CCPointI(column, row);
-
-            materialTypeID = SetRandomMaterialType();
-            materialName = Configuration.materialTypes[materialTypeID].Item2;
-            string materialFile = Configuration.materialTypes[materialTypeID].Item1;
-
-            materialSprite = new CCSprite(materialFile);
-
+            this.AnchorPoint = CCPoint.AnchorMiddle;
             materialDimensions = (ScreenInfo.preferredWidth - (Configuration.gridWidthSpacing * 2)) / Configuration.gridColumns;
-            spriteSize = materialSprite.ContentSize = new CCSize(materialDimensions, materialDimensions);
-            materialSprite.AnchorPoint = CCPoint.AnchorMiddle;
-            materialSprite.Position = new CCPoint((spriteSize.Width * (column + .5f)), spriteSize.Height * (row + .5f)) + new CCPoint(Configuration.gridWidthSpacing, Configuration.gridVerticalOffset);
+            this.Position = position = new CCPoint((materialDimensions * (column + .5f)), materialDimensions * (row + .5f)) + new CCPoint(Configuration.gridWidthSpacing, Configuration.gridVerticalOffset);
+            this.ContentSize = nodeSize = new CCSize(materialDimensions, materialDimensions);
+
+
+            //spriteSize = materialSprite.ContentSize = new CCSize(materialDimensions, materialDimensions);
+            //materialSprite.AnchorPoint = CCPoint.AnchorMiddle;
+            //materialSprite.Position = position;
             ;
 
             //  Adding a debug label to the material for testing
@@ -64,10 +68,10 @@ namespace Match3.Entities
             //debugLabel.Text = "[" + materialSprite.BoundingBoxTransformedToWorld.Center.X + ", " + materialSprite.BoundingBoxTransformedToWorld.Center.Y + "]";
             //debugLabel.Text = ThisChainGroup().ToString();
             debugLabel.Color = CCColor3B.Black;
-            debugLabel.PositionX = materialSprite.ContentSize.Width / 2.0f;
-            debugLabel.PositionY = materialSprite.ContentSize.Height / 2.0f;
+            debugLabel.PositionX = ContentSize.Width / 2.0f;
+            debugLabel.PositionY = ContentSize.Height / 2.0f;
             debugLabel.AnchorPoint = CCPoint.AnchorMiddle;
-            materialSprite.AddChild(debugLabel);
+            AddChild(debugLabel);
 
             //materialSprite.AddChild(drawNode, 10);
             //drawNode.DrawCircle(
@@ -75,8 +79,8 @@ namespace Match3.Entities
             //    radius: materialDimensions / 2,
             //    color: CCColor4B.Orange);
 
-            AddChild(materialSprite);
-            position = materialSprite.Position;
+            //AddChild(materialSprite);
+
 
         }
 
@@ -91,14 +95,14 @@ namespace Match3.Entities
             touchListener.OnTouchMoved = HandleTouchMoved;
             touchListener.OnTouchEnded = HandleTouchEnded;
             //touchListener.OnTouchCancelled = HandleTouchCancelled;
-            AddEventListener(touchListener, materialSprite);
+            AddEventListener(touchListener, this);
 
         }
 
 
         private bool HandleTouchBegan(CCTouch touch, CCEvent touchEvent)
         {
-            if (materialSprite.BoundingBox.ContainsPoint(touch.Location))
+            if (BoundingBox.ContainsPoint(touch.Location))
             {
                 // The user touched this material";
                 swipeStart = touch.Location;
@@ -106,7 +110,8 @@ namespace Match3.Entities
                 //debugLabel.Text = materialSprite.BoundingBox.ToString();
                 //debugLabel.Color = CCColor3B.Green;
                 //materialSprite.Position = touch.Location;
-                debugLabel.Text = "[" + position.X + ", " + position.Y + "]";
+                //materialSprite.Texture = new CCTexture2D("PeppermintSwirl");
+                //debugLabel.Text = "[" + position.X + ", " + position.Y + "]";
                 return true;
             }
             else
@@ -136,11 +141,11 @@ namespace Match3.Entities
                 swipeDirection.Y = Math.Sign(touchDelta.Y);
             }
 
-            //debugLabel.Text = swipeDirection.X + " , " + swipeDirection.Y;
+            debugLabel.Text = swipeDirection.X + " , " + swipeDirection.Y;
             
             //  Turn off the user interaction as the user should be allowed to move any of materials while materials are swapped, removed, and the grid refilled
             PauseListeners();
-            GridFunctions.TrySwap(this, swipeDirection);
+            GridFunctions.TrySwap(gridLocation, swipeDirection);
             ResumeListeners();
         }
 
@@ -223,11 +228,11 @@ namespace Match3.Entities
             return materialTypeID;
         }
 
-        //  points the caller to the location of the materialSprite in memory
-        public CCSprite GetMaterialSprite()
-        {
-            return materialSprite;
-        }
+        ////  points the caller to the location of the materialSprite in memory
+        //public CCSprite GetMaterialSprite()
+        //{
+        //    return materialSprite;
+        //}
 
         //  Returns which row the material is in
         public int GetMaterialRow()

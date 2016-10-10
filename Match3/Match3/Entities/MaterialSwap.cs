@@ -1,36 +1,39 @@
 using CocosSharp;
+using Match3.Functions;
 
 namespace Match3.Entities
 {
-    class Swap : CCNode
+    // Handles the mechanics of swapping two materials and holds
+    // the information to reverse the swap if it produces no matches
+    public static class MaterialSwap
     {
         // materials that will be swapped
-        public Material fromMaterial, toMaterial;
-        private CCPointI initialFromLocation, initialToLocation;
-        private CCPoint initialFromPosition, initialToPosition;
+        public static CCPointI fromGridLocation { get; set; }
+        public static CCPointI toGridLocation { get; set; }
 
-        // This class is supposed to be a set of materials that can/(are to) be swapped
-        public Swap(Material from, Material to)
+        private static Material fromMaterial;
+        private static Material toMaterial;
+        private static CCPoint fromPosition;
+        private static CCPoint toPosition;
+
+        //  Visually animates the swap using the CCMoveTo function provided by CocosSharp
+        //  and swaps the sprites along with the MaterialTypes ID.
+
+        public static void AnimateSwap()
         {
-            // initializes the two material pointers to null
-            fromMaterial = from;
-            toMaterial = to;
-            initialFromLocation = fromMaterial.gridLocation;
-            initialToLocation = toMaterial.gridLocation;
-            initialFromPosition = fromMaterial.Position;
-            initialToPosition = toMaterial.Position;
+            fromMaterial = GridFunctions.GetMaterialAtGridLocation(fromGridLocation);
+            toMaterial = GridFunctions.GetMaterialAtGridLocation(toGridLocation);
+            fromPosition = fromMaterial.position;
+            toPosition = toMaterial.position;
 
-            //toMaterial.debugLabel.Text = "TO";
+            fromMaterial.RunAction(new CCMoveTo(0.3f, toPosition));
+            toMaterial.RunAction(new CCMoveTo(0.3f, fromPosition));
 
-        }
+            fromMaterial.gridLocation = toGridLocation;
+            ActiveLevel.grid[toGridLocation.X, toGridLocation.Y] = fromMaterial;
 
-        //  Visually animates the swap using the CCMoveTo function provided by CocosSharp,
-        //  also updates the grid location of the materials
-
-        public void AnimateSwap()
-        {
-            fromMaterial.RunAction(new CCMoveTo(0.3f, initialToPosition));
-            toMaterial.RunAction(new CCMoveTo(0.3f, initialFromPosition));
+            toMaterial.gridLocation = fromGridLocation;
+            ActiveLevel.grid[fromGridLocation.X, fromGridLocation.Y] = toMaterial;
 
             //const float timeToTake = 0.3f; // in seconds
 
@@ -50,7 +53,7 @@ namespace Match3.Entities
         }
 
         //    //  Animation for a failed swap
-        //    private static async void FaildSwapAnimation(Swap swap)
+        //    private static async void FaildSwapAnimation(MaterialSwap swap)
         //    {
         //        const float timeToTake = 0.1f; // in seconds
         //        CCFiniteTimeAction coreAction = null;
