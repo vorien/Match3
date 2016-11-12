@@ -5,6 +5,7 @@ using Match3;
 using Match3.Functions;
 using System.Collections.Generic;
 using Match3.Scenes;
+using System.Diagnostics;
 
 namespace Match3.Entities
 {
@@ -23,7 +24,7 @@ namespace Match3.Entities
         private CCPoint swipeMoved; // Keeps track of the current touch location
         public CCPointI gridLocation;
         public CCLabel debugLabel;
-        public CCPoint position;
+        //public CCPoint position;
         private Random rand = new Random();
         //private CCDrawNode drawNode;
 
@@ -50,10 +51,10 @@ namespace Match3.Entities
             //AddChild(debugLabel);
 
             gridLocation = new CCPointI(column, row);
-            this.AnchorPoint = CCPoint.AnchorMiddle;
+            AnchorPoint = CCPoint.AnchorMiddle;
             materialDimensions = (ScreenInfo.preferredWidth - (Configuration.gridWidthSpacing * 2)) / Configuration.gridColumns;
-            this.Position = position = new CCPoint((materialDimensions * (column + .5f)), materialDimensions * (row + .5f)) + new CCPoint(Configuration.gridWidthSpacing, Configuration.gridVerticalOffset);
-            this.ContentSize = nodeSize = new CCSize(materialDimensions, materialDimensions);
+            Position = new CCPoint((materialDimensions * (column + .5f)), materialDimensions * (row + .5f)) + new CCPoint(Configuration.gridWidthSpacing, Configuration.gridVerticalOffset);
+            ContentSize = nodeSize = new CCSize(materialDimensions, materialDimensions);
 
 
             //spriteSize = materialSprite.ContentSize = new CCSize(materialDimensions, materialDimensions);
@@ -62,7 +63,7 @@ namespace Match3.Entities
             ;
 
             //  Adding a debug label to the material for testing
-            debugLabel = new CCLabel("", "Arial", 30, CCLabelFormat.SystemFont);
+            debugLabel = new CCLabel("", "Arial", 70, CCLabelFormat.SystemFont);
             //debugLabel.Text = "[" + row + ", " + column + "]";
             //debugLabel.Text = "?";
             //debugLabel.Text = "[" + materialSprite.BoundingBoxTransformedToWorld.Center.X + ", " + materialSprite.BoundingBoxTransformedToWorld.Center.Y + "]";
@@ -111,7 +112,7 @@ namespace Match3.Entities
                 //debugLabel.Color = CCColor3B.Green;
                 //materialSprite.Position = touch.Location;
                 //materialSprite.Texture = new CCTexture2D("PeppermintSwirl");
-                //debugLabel.Text = "[" + position.X + ", " + position.Y + "]";
+                debugLabel.Text = "[" + Position.X + ", " + Position.Y + "]";
                 return true;
             }
             else
@@ -124,29 +125,38 @@ namespace Match3.Entities
         private void HandleTouchMoved(CCTouch touch, CCEvent touchEvent)
         {
             swipeMoved = touch.Location;
+            Debug.WriteLine("swipeStart: " + swipeStart.ToString() + " ~ swipeMoved: " + swipeMoved.ToString());
         }
 
         private void HandleTouchEnded(CCTouch touch, CCEvent touchEvent)
         {
+            Debug.WriteLine("swipeStart: " + swipeStart.ToString() + " ~ swipeMoved: " + swipeMoved.ToString());
             CCPoint touchDelta = swipeMoved - swipeStart;
-            CCPointI swipeDirection = new CCPointI(0, 0);
-            if (Math.Abs(touchDelta.X) > Math.Abs(touchDelta.Y))
+            if (CCPoint.Distance(swipeMoved, swipeStart) > (materialDimensions / 2))
             {
-                swipeDirection.X = Math.Sign(touchDelta.X);
-                swipeDirection.Y = 0;
+                CCPointI swipeDirection = new CCPointI(0, 0);
+                if (Math.Abs(touchDelta.X) > Math.Abs(touchDelta.Y))
+                {
+                    swipeDirection.X = Math.Sign(touchDelta.X);
+                    swipeDirection.Y = 0;
+                }
+                else
+                {
+                    swipeDirection.X = 0;
+                    swipeDirection.Y = Math.Sign(touchDelta.Y);
+                }
+
+                debugLabel.Text = swipeDirection.X + " , " + swipeDirection.Y;
+
+                //  Turn off the user interaction as the user should be allowed to move any of materials while materials are swapped, removed, and the grid refilled
+                PauseListeners();
+                GridFunctions.TrySwap(gridLocation, swipeDirection);
+                ResumeListeners();
             }
             else
             {
-                swipeDirection.X = 0;
-                swipeDirection.Y = Math.Sign(touchDelta.Y);
+                debugLabel.Text = gridLocation.X + " , " + gridLocation.Y;
             }
-
-            debugLabel.Text = swipeDirection.X + " , " + swipeDirection.Y;
-            
-            //  Turn off the user interaction as the user should be allowed to move any of materials while materials are swapped, removed, and the grid refilled
-            PauseListeners();
-            GridFunctions.TrySwap(gridLocation, swipeDirection);
-            ResumeListeners();
         }
 
         //  If a touch was cancelled, call the touchesEnded method to reset swipe variables
@@ -263,6 +273,7 @@ namespace Match3.Entities
 
         public void CheckForChains()
         {
+            Debug.WriteLine(gridLocation.X + "," + gridLocation.Y);
             materialN = GridFunctions.GetMaterialAtGridLocation(gridLocation + new CCPointI(0, 1));
             materialS = GridFunctions.GetMaterialAtGridLocation(gridLocation + new CCPointI(0, -1));
             materialE = GridFunctions.GetMaterialAtGridLocation(gridLocation + new CCPointI(1, 0));
@@ -278,24 +289,30 @@ namespace Match3.Entities
                 case "Horizontal":
                     if (materialW == null || materialE == null)
                     {
+                        Debug.WriteLine("E or W null");
                         return;
                     }
                     if (materialW.materialTypeID != this.materialTypeID || materialE.materialTypeID != this.materialTypeID)
                     {
+                        Debug.WriteLine("No EW 3 match");
                         return;
                     }
+                    Debug.WriteLine("Setting chain groups to EW");
                     materialWNChainGroup = materialW.chainGroup;
                     materialESChainGroup = materialE.chainGroup;
                     break;
                 case "Vertical":
                     if (materialN == null || materialS == null)
                     {
+                        Debug.WriteLine("N or S null");
                         return;
                     }
                     if (materialN.materialTypeID != this.materialTypeID || materialS.materialTypeID != this.materialTypeID)
                     {
+                        Debug.WriteLine("No NS 3 match");
                         return;
                     }
+                    Debug.WriteLine("Setting chain groups to NS");
                     materialWNChainGroup = materialN.chainGroup;
                     materialESChainGroup = materialS.chainGroup;
                     break;
@@ -306,25 +323,28 @@ namespace Match3.Entities
 
             if (materialWNChainGroup == 0 && materialESChainGroup == 0) //neither is part of a chain group
             {
+                Debug.WriteLine("Neither is part of a chain group");
                 // New Chain Group
                 chainGroup = materialWNChainGroup = materialESChainGroup = ThisChainGroup();
-                if (Configuration.chains.ContainsKey(chainGroup))
+                if (ActiveLevel.chains.ContainsKey(chainGroup))
                 {
                     throw new Exception("Should be a new chain, but already exists in chains dictionary");
                 }
                 else
                 {
+                    Debug.WriteLine("Adding chain group");
                     Chain newChain = new Chain();
                     newChain.chainDirection = direction;
                     newChain.chainCount = 3;
-                    Configuration.chains.Add(chainGroup, newChain);
-                    Configuration.chains[chainGroup].UpdateChainLengths(direction, 3);
+                    ActiveLevel.chains.Add(chainGroup, newChain);
+                    ActiveLevel.chains[chainGroup].UpdateChainLengths(direction, 3);
                 }
             }
             else
             {
                 if (materialWNChainGroup != 0 && materialESChainGroup != 0)
                 {
+                    Debug.WriteLine("Both are part of a chain group");
                     if (materialWNChainGroup != materialESChainGroup)
                     {
                         throw new Exception("Multiple chains should not connect: current chainGroup not set");
@@ -333,9 +353,10 @@ namespace Match3.Entities
                     {
                         if (chainGroup == 0)
                         {
+                            Debug.WriteLine("active chain group is 0");
                             chainGroup = materialWNChainGroup;
-                            Configuration.chains[chainGroup].chainCount += 1;
-                            Configuration.chains[chainGroup].UpdateChainLengths(direction, 1);
+                            ActiveLevel.chains[chainGroup].chainCount += 1;
+                            ActiveLevel.chains[chainGroup].UpdateChainLengths(direction, 1);
                             //TODO: Check direction vs chainDirection to see if chainType should be X
                         }
                         else
@@ -346,13 +367,14 @@ namespace Match3.Entities
                 }
                 else
                 {
+                    Debug.WriteLine("Only one is part of a chain groupe");
                     chainGroup = materialWNChainGroup = materialESChainGroup = Math.Max(materialWNChainGroup, materialESChainGroup);
-                    Configuration.chains[chainGroup].chainCount += 2;
-                    Configuration.chains[chainGroup].UpdateChainLengths(direction, 2);
+                    ActiveLevel.chains[chainGroup].chainCount += 2;
+                    ActiveLevel.chains[chainGroup].UpdateChainLengths(direction, 2);
                     //TODO: Check direction vs chainDirection to see if chainType should be T
                 }
             }
-            this.debugLabel.Text = chainGroup.ToString();
+            debugLabel.Text = chainGroup.ToString();
         }
 
         private int ThisChainGroup()

@@ -20,54 +20,7 @@ namespace Match3.Functions
         private static Random rand = new Random();
         //private static List<PossibleSwaps> possibleSwaps;
         //private static List<Chain> deleteChains;
-        private static int possibleSwapCount = 0;
-        private static bool dropped, filledAgain, finishedRemoving, doneShuffling; //, pointGone;
-
-        //  Fills the grid up with new materials
-        public static void FillGrid()
-        {
-            for (int gRow = 0; gRow < Configuration.gridRows; gRow++)
-            {
-                for (int gColumn = 0; gColumn < Configuration.gridColumns; gColumn++)
-                {
-                    if (ActiveLevel.level.tiles[gColumn, gRow] == 1)
-                    {
-                        AssignMaterial(gColumn, gRow); // assigns a new material the location [gRow,gColumn] in the grid
-                    }
-                }
-            }
-        }
-
-        // Generates a random for each grid location [column, row] until it doesn't create a chain,
-        // then adds it to the grid.
-        public static void AssignMaterial(int column, int row)
-        {
-            Material newMaterial;
-            do
-            {
-                newMaterial = new Material(column, row);
-            }
-            while
-            (
-                newMaterial.IsPartOfChain()
-            );
-
-            ActiveLevel.grid[column, row] = newMaterial;
-        }
-
-        public static void InitializeGrid()
-        {
-            do
-            {
-                FillGrid();
-                //DetectPossibleSwaps();
-                //possibleSwapCount = possibleSwaps.Count;
-                possibleSwapCount = 1;
-            }
-            while (possibleSwapCount == 0);
-            //  Add the materials to the layer to be displayed to the screen
-            //addCandies();
-        }
+        //private static bool dropped, filledAgain, finishedRemoving, doneShuffling; //, pointGone;
 
         //public static async void ReInitializeGrid()
         //{
@@ -132,7 +85,7 @@ namespace Match3.Functions
         public static void TrySwap(CCPointI fromGridLocation, CCPointI toOffset)
         {
             CCPointI toGridLocation = GetMaterialAtGridLocation(fromGridLocation + toOffset).gridLocation;
-            if (GetMaterialAtGridLocation(toGridLocation) == null)
+            if (GetMaterialAtGridLocation(toGridLocation) == null || GetMaterialAtGridLocation(fromGridLocation) == null)
             {
                 return;
             }
@@ -144,6 +97,24 @@ namespace Match3.Functions
             MaterialSwap.toGridLocation = toGridLocation;
 
             MaterialSwap.AnimateSwap();
+
+            for (int gRow = 0; gRow < Configuration.gridRows; gRow++)
+            {
+                for (int gColumn = 0; gColumn < Configuration.gridColumns; gColumn++)
+                {
+                    if (ActiveLevel.level.tiles[gColumn, gRow] == 1)
+                    {
+                        ActiveLevel.grid[gColumn, gRow].CheckForChains();
+                    }
+                }
+            }
+
+            foreach(KeyValuePair<int, Chain> chain in ActiveLevel.chains)
+            {
+                Debug.WriteLine(chain.Key + ": " + chain.Value.chainType + " - " + chain.Value.chainCount);
+            }
+
+            //MaterialSwap.AnimateSwap(true);
 
             //After swap, call on all materials
             //Material checkMaterial;

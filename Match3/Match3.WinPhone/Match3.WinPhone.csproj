@@ -107,6 +107,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Fonts\MarkerFelt-22.xnb" />
+    <Content Include="Content\Images\background.png" />
+    <Content Include="Content\Images\banner.png" />
+    <Content Include="Content\Images\BlueJollyRancher.png" />
+    <Content Include="Content\Images\button.png" />
+    <Content Include="Content\Images\CandyCorn.png" />
+    <Content Include="Content\Images\GreenElliptical.png" />
+    <Content Include="Content\Images\PeppermintSwirl.png" />
+    <Content Include="Content\Images\PurpleNerds.png" />
+    <Content Include="Content\Images\tile.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Logo.scale-240.png" />
@@ -169,6 +178,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\Images\background.xnb" />
+    <None Include="Content\Images\banner.xnb" />
+    <None Include="Content\Images\BlueJollyRancher.xnb" />
+    <None Include="Content\Images\button.xnb" />
+    <None Include="Content\Images\CandyCorn.xnb" />
+    <None Include="Content\Images\ContentProject.mgcb" />
+    <None Include="Content\Images\GreenElliptical.xnb" />
+    <None Include="Content\Images\PeppermintSwirl.xnb" />
+    <None Include="Content\Images\PurpleNerds.xnb" />
+    <None Include="Content\Images\tile.xnb" />
+    <None Include="Content\Levels\Level_0.json" />
+    <None Include="Content\Levels\Level_1.json" />
+    <None Include="Content\Levels\Level_2.json" />
+    <None Include="Content\Levels\Level_3.json" />
+    <None Include="Content\Levels\Level_4.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">

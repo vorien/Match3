@@ -15,5 +15,12 @@ namespace Match3.Functions
             return values.All(v => v.Equals(values[0]));
         }
 
+        public static void ExchangeValues<T>(ref T obj1, ref T obj2)
+        {
+            T temp = obj2;
+            obj2 = obj1;
+            obj1 = temp;
+        }
+
     }
 }

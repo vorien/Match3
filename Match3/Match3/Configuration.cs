@@ -9,12 +9,16 @@ namespace Match3
 {
     public static class Configuration
     {
-        public const int gridRows = 9;
-        public const int gridColumns = 9;
+        //public const int gridRows = 9;
+        //public const int gridColumns = 9;
+        public const int gridRows = 3;
+        public const int gridColumns = 3;
         public const int gridWidthSpacing = 10;
         public const int gridVerticalOffset = 120;
+        public const float tileSize = (ScreenInfo.preferredWidth - (Configuration.gridWidthSpacing * 2)) / Configuration.gridColumns;
+        public static float worldTileSize;
         public static List<Tuple<string, string>> materialTypes = new MaterialTypes();
-        public static Dictionary<int, Chain> chains = new Dictionary<int, Chain>();
+
     }
 
     class MaterialTypes : List<Tuple<string, string>>
