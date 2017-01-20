@@ -11,7 +11,7 @@ namespace Match3
     {
         //public const int gridRows = 9;
         //public const int gridColumns = 9;
-        public const int gridRows = 3;
+        public const int gridRows = 4;
         public const int gridColumns = 3;
         public const int gridWidthSpacing = 10;
         public const int gridVerticalOffset = 120;

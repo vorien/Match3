@@ -12,7 +12,7 @@ namespace Match3
         public static CCGameView gameView;
         static CCDirector director;
         //public static CCScene gameScene;
-        public static CCSizeI viewSize;
+        //public static CCSizeI viewSize;
 
         public static void LoadGame(object sender, EventArgs e)
         {
@@ -22,11 +22,12 @@ namespace Match3
             if (gameView != null)
             {
                 var contentSearchPaths = new List<string>() { "Fonts", "Sounds", "Images" };
-                viewSize = gameView.ViewSize;
 
-                ScreenInfo.Width = viewSize.Width;
-                ScreenInfo.Height = viewSize.Height;
-                ScreenInfo.setFontSizes();
+
+                //viewSize = gameView.ViewSize;
+                //ScreenInfo.Width = viewSize.Width;
+                //ScreenInfo.Height = viewSize.Height;
+                //ScreenInfo.setFontSizes();
 
                 int width = (int)ScreenInfo.preferredWidth;
                 int height = (int)ScreenInfo.preferredHeight;

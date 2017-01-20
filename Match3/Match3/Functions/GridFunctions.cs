@@ -84,35 +84,21 @@ namespace Match3.Functions
 
         public static void TrySwap(CCPointI fromGridLocation, CCPointI toOffset)
         {
-            CCPointI toGridLocation = GetMaterialAtGridLocation(fromGridLocation + toOffset).gridLocation;
-            if (GetMaterialAtGridLocation(toGridLocation) == null || GetMaterialAtGridLocation(fromGridLocation) == null)
+            Material fromMaterial = GetMaterialAtGridLocation(fromGridLocation);
+            Material toMaterial = GetMaterialAtGridLocation(fromGridLocation + toOffset);
+            if (fromMaterial == null || toMaterial == null)
             {
                 return;
             }
 
             //toMaterial.debugLabel.Text = "SWAPTO";
             //debugLabel.Text = "Switching material at [" + fromRow + ", " + fromCol + "] with material at [" + toRow + ", " + toCol + "].";
+            MaterialSwap materialSwap = new MaterialSwap(fromMaterial, toMaterial);
 
-            MaterialSwap.fromGridLocation = fromGridLocation;
-            MaterialSwap.toGridLocation = toGridLocation;
+            materialSwap.AnimateSwap();
 
-            MaterialSwap.AnimateSwap();
+            //CheckForChains();
 
-            for (int gRow = 0; gRow < Configuration.gridRows; gRow++)
-            {
-                for (int gColumn = 0; gColumn < Configuration.gridColumns; gColumn++)
-                {
-                    if (ActiveLevel.level.tiles[gColumn, gRow] == 1)
-                    {
-                        ActiveLevel.grid[gColumn, gRow].CheckForChains();
-                    }
-                }
-            }
-
-            foreach(KeyValuePair<int, Chain> chain in ActiveLevel.chains)
-            {
-                Debug.WriteLine(chain.Key + ": " + chain.Value.chainType + " - " + chain.Value.chainCount);
-            }
 
             //MaterialSwap.AnimateSwap(true);
 
@@ -211,6 +197,42 @@ namespace Match3.Functions
             //    //ResumeListeners();
             //    //}
         }
+
+        public static void ExchangeLocations(Material fromMaterial, Material toMaterial)
+        {
+            CCPointI tempGridLocation = toMaterial.gridLocation;
+            toMaterial.gridLocation = fromMaterial.gridLocation;
+            fromMaterial.gridLocation = tempGridLocation;
+        }
+
+        public static void ExchangeMaterials(Material fromMaterial, Material toMaterial)
+        {
+            Material tempMaterial = toMaterial;
+            CCPointI tempGridLocation = toMaterial.gridLocation;
+            toMaterial.gridLocation = fromMaterial.gridLocation;
+            fromMaterial.gridLocation = tempGridLocation;
+        }
+
+        public static void CheckForChains()
+        {
+            //Check for chains
+            for (int gRow = 0; gRow < Configuration.gridRows; gRow++)
+            {
+                for (int gColumn = 0; gColumn < Configuration.gridColumns; gColumn++)
+                {
+                    if (ActiveLevel.level.tiles[gColumn, gRow] == 1)
+                    {
+                        ActiveLevel.grid[gColumn, gRow].CheckForChains();
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<int, Chain> chain in ActiveLevel.chains)
+            {
+                Debug.WriteLine(chain.Key + ": " + chain.Value.chainType + " - " + chain.Value.chainCount);
+            }
+        }
+
 
         //    //  Detects how many swaps are possible, and adds the possible swaps in the possibleSwaps array
         //    //  Will return the number of possible swaps that were detected in the grid

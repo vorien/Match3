@@ -6,38 +6,43 @@ namespace Match3.Entities
 {
     // Handles the mechanics of swapping two materials and holds
     // the information to reverse the swap if it produces no matches
-    public static class MaterialSwap
+    public class MaterialSwap
     {
         // materials that will be swapped
-        public static CCPointI fromGridLocation;
-        public static CCPointI toGridLocation;
+        private CCPointI fromGridLocation;
+        private CCPointI toGridLocation;
 
-        private static Material fromMaterial;
-        private static Material toMaterial;
-        private static CCPoint fromPosition;
-        private static CCPoint toPosition;
+        private Material fromMaterial;
+        private Material toMaterial;
+        private CCPoint fromPosition;
+        private CCPoint toPosition;
+
+        public MaterialSwap(Material fMaterial, Material tMaterial)
+        {
+            fromMaterial = fMaterial;
+            toMaterial = tMaterial;
+        }
 
         //  Visually animates the swap using the CCMoveTo function provided by CocosSharp
         //  and swaps the sprites along with the MaterialTypes ID.
 
-        public static void AnimateSwap(bool reverse = false)
+        public void AnimateSwap(bool reverse = false)
         {
             if(reverse == true)
             {
-                GeneralFunctions.ExchangeValues(ref fromGridLocation, ref toGridLocation);
+                GridFunctions.ExchangeLocations(fromMaterial, toMaterial);
             }
-            fromMaterial = GridFunctions.GetMaterialAtGridLocation(fromGridLocation);
-            toMaterial = GridFunctions.GetMaterialAtGridLocation(toGridLocation);
             fromPosition = fromMaterial.Position;
             toPosition = toMaterial.Position;
 
+            //Reset debugLabel text before swap.  Can be removed for production
             for (int gRow = 0; gRow < Configuration.gridRows; gRow++)
             {
                 for (int gColumn = 0; gColumn < Configuration.gridColumns; gColumn++)
                 {
                     if (ActiveLevel.level.tiles[gColumn, gRow] == 1)
                     {
-                        ActiveLevel.grid[gColumn, gRow].debugLabel.Text = ""; // assigns a new material the location [gRow,gColumn] in the grid
+                        ActiveLevel.grid[gColumn, gRow].debugLabel.Text = "";
                         ActiveLevel.grid[gColumn, gRow].ZOrder = 1;
                     }
                 }
@@ -52,11 +57,13 @@ namespace Match3.Entities
             fromMaterial.debugLabel.Text = fromMaterial.gridLocation.X + "," + fromMaterial.gridLocation.Y;
             toMaterial.debugLabel.Text = toMaterial.gridLocation.X + "," + toMaterial.gridLocation.Y;
 
-            fromMaterial.ZOrder = 5;
-            toMaterial.ZOrder = 10;
+            fromMaterial.ZOrder = 10;
+            toMaterial.ZOrder = 5;
 
-            fromMaterial.RunAction(new CCMoveTo(0.3f, toPosition));
-            toMaterial.RunAction(new CCMoveTo(0.3f, fromPosition));
+            fromMaterial.RunAction(new CCMoveTo(0.8f, toPosition));
+            toMaterial.RunAction(new CCMoveTo(0.8f, fromPosition));
+
+            GridFunctions.ExchangeLocations(fromMaterial, toMaterial);
 
             //            ActiveLevel.grid[toGridLocation.X, toGridLocation.Y] = fromMaterial;
             //ActiveLevel.grid[toGridLocation.X, toGridLocation.Y].gridLocation = toGridLocation;
@@ -64,11 +71,11 @@ namespace Match3.Entities
             //            ActiveLevel.grid[fromGridLocation.X, fromGridLocation.Y] = toMaterial;
             //ActiveLevel.grid[fromGridLocation.X, fromGridLocation.Y].gridLocation = fromGridLocation;
 
-            GeneralFunctions.ExchangeValues(ref ActiveLevel.grid[fromGridLocation.X, fromGridLocation.Y], ref ActiveLevel.grid[toGridLocation.X, toGridLocation.Y]);
             //GeneralFunctions.ExchangeValues(ref ActiveLevel.grid[fromGridLocation.X, fromGridLocation.Y].gridLocation, ref ActiveLevel.grid[toGridLocation.X, toGridLocation.Y].gridLocation);
 
             //fromMaterial.debugLabel.Text += "\n" + ActiveLevel.grid[toGridLocation.X, toGridLocation.Y].gridLocation.X + "," + ActiveLevel.grid[toGridLocation.X, toGridLocation.Y].gridLocation.Y;
             //toMaterial.debugLabel.Text += "\n" + ActiveLevel.grid[fromGridLocation.X, fromGridLocation.Y].gridLocation.X + "," + ActiveLevel.grid[fromGridLocation.X, fromGridLocation.Y].gridLocation.Y;
+
 
             fromMaterial.debugLabel.Text += "\n" + fromMaterial.gridLocation.X + "," + fromMaterial.gridLocation.Y;
             toMaterial.debugLabel.Text += "\n" + toMaterial.gridLocation.X + "," + toMaterial.gridLocation.Y;
@@ -93,7 +100,7 @@ namespace Match3.Entities
         }
 
         //  Animation for a failed swap
-        private static void FailedSwapAnimation()
+        private void FailedSwapAnimation()
         {
             fromMaterial.RunAction(new CCMoveTo(0.3f, toPosition));
             toMaterial.RunAction(new CCMoveTo(0.3f, fromPosition));

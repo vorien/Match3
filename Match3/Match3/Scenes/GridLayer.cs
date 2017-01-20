@@ -17,7 +17,7 @@ namespace Match3.Scenes
 
         public GridLayer(LevelLayer levelLayer)
         {
-            ActiveLevel.grid = new Material[Configuration.gridRows, Configuration.gridColumns];
+            ActiveLevel.grid = new Material[Configuration.gridColumns, Configuration.gridRows];
 
             InitializeGrid();
             DisplayGrid();
@@ -73,7 +73,7 @@ namespace Match3.Scenes
             Material newMaterial;
             do
             {
-                newMaterial = new Material(column, row);
+                newMaterial = new Material(column, row, this);
             }
             while
             (

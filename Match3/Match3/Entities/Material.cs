@@ -26,6 +26,8 @@ namespace Match3.Entities
         public CCLabel debugLabel;
         //public CCPoint position;
         private Random rand = new Random();
+        private GridLayer gridLayer;
+        public int id;
         //private CCDrawNode drawNode;
 
         //private LevelLayer levelLayer { get; set; }
@@ -35,8 +37,10 @@ namespace Match3.Entities
 
         // default constructor
         // generates a random material
-        public Material(int column, int row)
+        public Material(int column, int row, GridLayer gLayer)
         {
+            id = column * 10 + row;
+            gridLayer = gLayer;
             materialTypeID = SetRandomMaterialType();
             materialName = Configuration.materialTypes[materialTypeID].Item2;
             string materialFile = Configuration.materialTypes[materialTypeID].Item1;
@@ -97,6 +101,7 @@ namespace Match3.Entities
             touchListener.OnTouchEnded = HandleTouchEnded;
             //touchListener.OnTouchCancelled = HandleTouchCancelled;
             AddEventListener(touchListener, this);
+            debugLabel.Text = "[" + Position.X + ", " + Position.Y + "]";
 
         }
 
@@ -106,7 +111,8 @@ namespace Match3.Entities
             if (BoundingBox.ContainsPoint(touch.Location))
             {
                 // The user touched this material";
-                swipeStart = touch.Location;
+                swipeStart = ScreenToWorldspace(touch.Location);
+                swipeMoved = ScreenToWorldspace(touch.Location);
                 //debugLabel.Text = "Touched";
                 //debugLabel.Text = materialSprite.BoundingBox.ToString();
                 //debugLabel.Color = CCColor3B.Green;
@@ -124,12 +130,16 @@ namespace Match3.Entities
 
         private void HandleTouchMoved(CCTouch touch, CCEvent touchEvent)
         {
-            swipeMoved = touch.Location;
+            swipeMoved = ScreenToWorldspace(touch.Location);
             Debug.WriteLine("swipeStart: " + swipeStart.ToString() + " ~ swipeMoved: " + swipeMoved.ToString());
         }
 
         private void HandleTouchEnded(CCTouch touch, CCEvent touchEvent)
         {
+            //if(swipeMoved.X < 5 || swipeMoved.Y < 5)
+            //{
+            //    return;
+            //}
             Debug.WriteLine("swipeStart: " + swipeStart.ToString() + " ~ swipeMoved: " + swipeMoved.ToString());
             CCPoint touchDelta = swipeMoved - swipeStart;
             if (CCPoint.Distance(swipeMoved, swipeStart) > (materialDimensions / 2))
@@ -145,7 +155,7 @@ namespace Match3.Entities
                     swipeDirection.X = 0;
                     swipeDirection.Y = Math.Sign(touchDelta.Y);
                 }
-
+                
                 debugLabel.Text = swipeDirection.X + " , " + swipeDirection.Y;
 
                 //  Turn off the user interaction as the user should be allowed to move any of materials while materials are swapped, removed, and the grid refilled
