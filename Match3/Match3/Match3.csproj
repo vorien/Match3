@@ -33,18 +33,19 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Entities\Chain.cs" />
     <Compile Include="Entities\Tile.cs" />
+    <Compile Include="Functions\GeneralFunctions.cs" />
     <Compile Include="Functions\GridFunctions.cs" />
     <Compile Include="Functions\SwapFunctions.cs" />
     <Compile Include="ActiveLevel.cs" />
-    <Compile Include="Information\Configuration.cs" />
-    <Compile Include="Information\ScreenInfo.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="ScreenInfo.cs" />
     <Compile Include="Entities\ReplayButton.cs" />
     <Compile Include="Entities\HomeButton.cs" />
     <Compile Include="Entities\BackButton.cs" />
     <Compile Include="Entities\LevelButton.cs" />
-    <Compile Include="Entities\Chain.cs" />
-    <Compile Include="Entities\Candy.cs" />
+    <Compile Include="Entities\Material.cs" />
     <Compile Include="GameDelegate.cs" />
     <Compile Include="Scenes\DebugLayer.cs" />
     <Compile Include="Scenes\GridLayer.cs" />
@@ -60,7 +61,7 @@
     <Compile Include="Scenes\GameOverScene.cs" />
     <Compile Include="Scenes\StartScene.cs" />
     <Compile Include="Scenes\LevelScene.cs" />
-    <Compile Include="Entities\Swap.cs" />
+    <Compile Include="Entities\MaterialSwap.cs" />
     <Compile Include="Scenes\TargetLayer.cs" />
     <Compile Include="Scenes\TestLayer.cs" />
   </ItemGroup>
@@ -85,7 +86,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Information\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

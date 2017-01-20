@@ -1,5 +1,5 @@
 ﻿using CocosSharp;
-using Match3.Information;
+using Match3;
 
 namespace Match3.Scenes
 {

@@ -12,6 +12,7 @@ namespace Match3
     {
         public static Level level;
         public static int id;
-        public static Candy[,] grid;
+        public static Material[,] grid;
+        public static Dictionary<int, Chain> chains = new Dictionary<int, Chain>();
     }
 }

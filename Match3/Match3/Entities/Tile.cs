@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CocosSharp;
-using Match3.Information;
+using Match3;
 
 namespace Match3.Entities
 {
@@ -17,7 +17,7 @@ namespace Match3.Entities
             ContentSize = new CCSize(tileDimensions, tileDimensions);
             AnchorPoint = CCPoint.AnchorMiddle;
 
-            //  Adding a debug label that will display the candy's row and column numbers, to see if the candy visually match with it's array locations
+            //  Adding a debug label that will display the material's row and column numbers, to see if the material visually match with it's array locations
             CCLabel debugLabel = new CCLabel("tile", "Arial", 22, CCLabelFormat.SystemFont);
             //debugLabel.Text = "[" + row + ", " + column + "]";
             debugLabel.Color = CCColor3B.White;
